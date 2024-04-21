@@ -8,7 +8,6 @@ using MyCoffeeShop.Application.ShopProducts;
 using MyCoffeeShop.Application.ShopOrders;
 using MyCoffeeShop.Application.TransactionTypes;
 using MyCoffeeShop.Application.Employees;
-using MyCoffeeShop.Application.Customers;
 using MyCoffeeShop.Application.Inventories;
 using MyCoffeeShop.Application.Transactions;
 
@@ -18,19 +17,15 @@ public class ApplicationDbContext : DbContext
 {
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
-    private readonly IDomainEventService _domainEventService;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
         ICurrentUserService currentUserService,
-        IDomainEventService domainEventService,
         IDateTime dateTime) : base(options)
     {
         _currentUserService = currentUserService;
-        _domainEventService = domainEventService;
         _dateTime = dateTime;
     }
-    public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
@@ -66,15 +61,8 @@ public class ApplicationDbContext : DbContext
             }
         }
 
-        var events = ChangeTracker.Entries<IHasDomainEvent>()
-                .Select(x => x.Entity.DomainEvents)
-                .SelectMany(x => x)
-                .Where(domainEvent => !domainEvent.IsPublished)
-                .ToArray();
 
         var result = await base.SaveChangesAsync(cancellationToken);
-
-        await DispatchEvents(events);
 
         return result;
     }
@@ -86,12 +74,4 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(builder);
     }
 
-    private async Task DispatchEvents(DomainEvent[] events)
-    {
-        foreach (var oneEvent in events)
-        {
-            oneEvent.IsPublished = true;
-            await _domainEventService.Publish(oneEvent);
-        }
-    }
 }

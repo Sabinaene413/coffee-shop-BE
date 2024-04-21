@@ -29,12 +29,3 @@ internal sealed class DeleteShopProductCommandHandler : IRequestHandler<DeleteSh
     }
 }
 
-public class ShopProductDeletedEvent : DomainEvent
-{
-    public ShopProductDeletedEvent(ShopProduct item)
-    {
-        Item = item;
-    }
-
-    public ShopProduct Item { get; }
-}

@@ -45,7 +45,6 @@ public static class DependencyInjection
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
 
-        services.AddScoped<IDomainEventService, DomainEventService>();
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
         services.AddScoped<TokenService>();

@@ -28,13 +28,3 @@ internal sealed class DeleteInventoryCommandHandler : IRequestHandler<DeleteInve
         await _context.SaveChangesAsync(cancellationToken);
     }
 }
-
-public class InventoryDeletedEvent : DomainEvent
-{
-    public InventoryDeletedEvent(Inventory item)
-    {
-        Item = item;
-    }
-
-    public Inventory Item { get; }
-}

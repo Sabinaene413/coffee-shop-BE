@@ -30,18 +30,6 @@ internal sealed class DeleteUserCommandHandler : IRequestHandler<DeleteUserComma
 
         _context.Users.Remove(entity);
 
-        entity.DomainEvents.Add(new UserDeletedEvent(entity));
-
         await _context.SaveChangesAsync(cancellationToken);
     }
-}
-
-public class UserDeletedEvent : DomainEvent
-{
-    public UserDeletedEvent(User item)
-    {
-        Item = item;
-    }
-
-    public User Item { get; }
 }

@@ -18,7 +18,7 @@ public class ShopProductOrder : BaseEntity
     public virtual ShopOrder ShopOrder { get; set; }
 }
 
-public class ShopProductDto : IMapFrom<ShopProductOrder>
+public class ShopProductOrderDto : IMapFrom<ShopProductOrder>
 {
     public long Id { get; set; }
     public long ShopProductId { get; set; }

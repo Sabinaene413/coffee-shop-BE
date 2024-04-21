@@ -11,7 +11,7 @@ public record CreateOrderCommand(
     DateTime? OrderDate,
     DateTime? ArrivalDate,
     bool Received,
-    List<ShopProductDto> ShopOrderProducts
+    List<ShopProductOrderDto> ShopOrderProducts
 ) : IRequest<ShopOrderDto>;
 
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>

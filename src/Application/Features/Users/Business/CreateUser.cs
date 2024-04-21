@@ -85,20 +85,9 @@ internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserComma
             UserCredentialId = userCredentials.Id
         };
 
-        entity.DomainEvents.Add(new UserCreatedEvent(entity));
-
         _context.Users.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<UserDto>(entity); ;
     }
 }
 
-public class UserCreatedEvent : DomainEvent
-{
-    public UserCreatedEvent(User item)
-    {
-        Item = item;
-    }
-
-    public User Item { get; }
-}

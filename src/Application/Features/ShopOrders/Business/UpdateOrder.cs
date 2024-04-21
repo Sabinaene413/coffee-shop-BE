@@ -14,7 +14,7 @@ public record UpdateOrderCommand(
     DateTime? OrderDate,
     DateTime? ArrivalDate,
     bool Received,
-    List<ShopProductDto> ShopOrderProducts,
+    List<ShopProductOrderDto> ShopOrderProducts,
     bool Active
 ) : IRequest<ShopOrderDto>;
 

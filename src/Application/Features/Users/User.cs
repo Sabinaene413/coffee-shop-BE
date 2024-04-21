@@ -3,7 +3,7 @@ using MyCoffeeShop.Application.Common.Mappings;
 
 namespace MyCoffeeShop.Application.Users;
 
-public class User : BaseEntity, IHasDomainEvent
+public class User : BaseEntity
 {
     public User()
     {
@@ -16,8 +16,6 @@ public class User : BaseEntity, IHasDomainEvent
     public UserRole Role { get; set; }
     public long UserCredentialId { get; set; }
 
-
-    public List<DomainEvent> DomainEvents { get; } = new List<DomainEvent>();
 }
 
 public enum UserRole
@@ -36,14 +34,3 @@ public class UserDto : IMapFrom<User>
     public UserRole Role { get; set; }
     public bool Active { get; set; }
 }
-
-public class UserCompletedEvent : DomainEvent
-{
-    public UserCompletedEvent(User item)
-    {
-        Item = item;
-    }
-
-    public User Item { get; }
-}
-

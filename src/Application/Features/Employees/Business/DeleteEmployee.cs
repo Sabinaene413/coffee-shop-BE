@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Exceptions;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 namespace MyCoffeeShop.Application.Employees;
@@ -29,12 +28,3 @@ internal sealed class DeleteEmployeeCommandHandler : IRequestHandler<DeleteEmplo
     }
 }
 
-public class EmployeeDeletedEvent : DomainEvent
-{
-    public EmployeeDeletedEvent(Employee item)
-    {
-        Item = item;
-    }
-
-    public Employee Item { get; }
-}

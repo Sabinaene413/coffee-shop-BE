@@ -8,8 +8,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.Ignore(e => e.DomainEvents);
-
         builder.Property(t => t.FirstName)
             .HasMaxLength(ConfigurationConstants.nameStringLength);
 

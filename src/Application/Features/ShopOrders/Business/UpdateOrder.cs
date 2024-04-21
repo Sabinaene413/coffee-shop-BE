@@ -4,6 +4,7 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
+using MyCoffeeShop.Application.Inventories;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
@@ -50,6 +51,7 @@ internal sealed class UpdateOrderCommandHandler
                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
                ?? throw new NotFoundException(nameof(ShopOrder), request.Id);
 
+        var oldReceived = entity.Received;
         entity.ShopOrderProducts = request.ShopOrderProducts.Select(x => new ShopProductOrder()
         {
             ShopProductId = x.ShopProductId,
@@ -65,6 +67,19 @@ internal sealed class UpdateOrderCommandHandler
 
         _applicationDbContext.ShopOrders.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
+
+        if (!oldReceived && entity.Received)
+        {
+            var newInventories = entity.ShopOrderProducts.Select(y => new Inventory()
+            {
+                Description = $"Comanda {entity.Id} Primita",
+                MinimumLevel = 10,
+                Quantity = y.Quantity,
+                ShopProductId = y.ShopProductId,
+            }).ToList();
+            await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
+        }
 
         return _mapper.Map<ShopOrderDto>(entity);
     }

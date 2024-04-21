@@ -39,6 +39,16 @@ namespace MyCoffeeShop.Application.ShopOrders
             return Ok(await Mediator.Send(command, cancellationToken)); // Returns the ShopOrder data
         }
 
+
+        [HttpPost("MarkOrderReceived")]
+        public async Task<ActionResult<ShopOrderDto>> MarkOrderReceived(
+            [FromBody] MarkOrderReceivedCommand command,
+            CancellationToken cancellationToken
+        )
+        {
+            return Ok(await Mediator.Send(command, cancellationToken));
+        }
+
         // API endpoint for filtering ShopOrders
         [HttpPost("Filter")]
         [ProducesResponseType(typeof(List<ShopOrder>), 200)] // Specifies the response type for successful filtering

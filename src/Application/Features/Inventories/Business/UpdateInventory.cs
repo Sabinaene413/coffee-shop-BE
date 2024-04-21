@@ -1,5 +1,9 @@
 ﻿using MyCoffeeShop.Application.Infrastructure.Persistence;
 using MyCoffeeShop.Application.Common.Exceptions;
+using MediatR;
+using FluentValidation;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCoffeeShop.Application.Inventories;
 

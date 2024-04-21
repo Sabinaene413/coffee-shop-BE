@@ -32,5 +32,4 @@ public class UserDto : IMapFrom<User>
     public string? UserName { get; set; }
     public string? Email { get; set; }
     public UserRole Role { get; set; }
-    public bool Active { get; set; }
 }

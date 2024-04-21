@@ -11,8 +11,7 @@ public record UpdateShopProductCommand(
     long Id,
     string Name,
     decimal Price,
-    string Description,
-    bool Active
+    string Description
 ) : IRequest<ShopProductDto>;
 
 public class UpdateShopProductCommandValidator : AbstractValidator<UpdateShopProductCommand>
@@ -51,7 +50,6 @@ internal sealed class UpdateShopProductCommandHandler
         entity.Name = request.Name;
         entity.Price = request.Price;
         entity.Description = request.Description;
-        entity.Active = request.Active;
 
         _applicationDbContext.ShopProducts.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

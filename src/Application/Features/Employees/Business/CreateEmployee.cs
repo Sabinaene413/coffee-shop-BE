@@ -2,26 +2,23 @@
 using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Http;
 
 namespace MyCoffeeShop.Application.Employees;
 
 public record CreateEmployeeCommand(
-    string Name,
-    string Address,
-    string ContactInformation,
-    string Position,
-    DateTime BirthDate,
-    DateTime HireDate
+    string? FirstName,
+    string? LastName,
+    IFormFile File,
+    decimal? Taxes,
+    decimal? SalaryBrut,
+    decimal? SalaryNet
 ) : IRequest<EmployeeDto>;
 
 public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
 {
     public CreateEmployeeCommandValidator()
     {
-        RuleFor(v => v.Name).NotEmpty();
-        RuleFor(v => v.Position).NotEmpty();
-        RuleFor(v => v.BirthDate).NotEmpty();
-        RuleFor(v => v.HireDate).NotEmpty();
     }
 }
 
@@ -45,14 +42,20 @@ internal sealed class CreateEmployeeCommandHandler
         CancellationToken cancellationToken
     )
     {
+        string filename = request.File.FileName;
+        filename = Path.GetFileName(filename);
+        string uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati", filename);
+        var stream = new FileStream(uploadfilepath, FileMode.Create);
+        await request.File.CopyToAsync(stream, cancellationToken);
+
         var entity = new Employee
         {
-            Name = request.Name,
-            Address = request.Address,
-            ContactInformation = request.ContactInformation,
-            BirthDate = request.BirthDate,
-            HireDate = request.HireDate,
-            Position = request.Position
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            SalaryBrut = request.SalaryBrut,
+            SalaryNet = request.SalaryNet,
+            Taxes = request.Taxes,
+            FilePath = uploadfilepath,
         };
 
         await _applicationDbContext.Employees.AddAsync(entity, cancellationToken);

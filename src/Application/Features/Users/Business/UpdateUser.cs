@@ -16,7 +16,6 @@ public class UpdateUserCommand : IRequest<UserDto>
     public string? UserName { get; set; }
     public string? Password { get; set; }
     public string? Email { get; set; }
-    public bool Active { get; set; }
 }
 
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
@@ -47,7 +46,7 @@ public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
     private bool BeUniqueEmail(string email, long Id)
     {
         // Check if the email is unique in the database
-        return !_applicationDbContext.Users.Any(u => u.Email == email && u.Id != Id && u.Active);
+        return !_applicationDbContext.Users.Any(u => u.Email == email && u.Id != Id);
     }
 }
 
@@ -90,7 +89,6 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
             user.LastName = request.LastName;
             user.Email = request.Email;
             user.UserName = request.UserName;
-            user.Active = request.Active;
 
             await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<UserDto>(user);

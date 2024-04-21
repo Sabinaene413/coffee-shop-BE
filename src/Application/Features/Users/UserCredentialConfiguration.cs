@@ -17,7 +17,6 @@ namespace MyCoffeeShop.Application.Users
                 Email = UserCredential.DefaultAdminEmail,
                 PasswordHash = PasswordUtils.Hash(UserCredential.DefaultPassword, out var passwordSalt),
                 PasswordSalt = passwordSalt,
-                Active = true,
             });
         }
     }

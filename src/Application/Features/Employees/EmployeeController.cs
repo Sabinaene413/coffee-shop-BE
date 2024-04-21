@@ -1,5 +1,6 @@
 ﻿using MyCoffeeShop.Application.Common.Abstracts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace MyCoffeeShop.Application.Employees
 {
@@ -30,8 +31,8 @@ namespace MyCoffeeShop.Application.Employees
 
         // API endpoint for getting a Employee by ID
         [HttpPost("GetById")]
-        [ProducesResponseType(typeof(EmployeeDto), 200)] // Specifies the response type for successful retrieval
-        public async Task<ActionResult<EmployeeDto>> GetById(
+        [ProducesResponseType(typeof((EmployeeDto, IFormFile)), 200)] // Specifies the response type for successful retrieval
+        public async Task<ActionResult<(EmployeeDto, IFormFile)>> GetById(
             [FromBody] GetEmployeeByIdCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )

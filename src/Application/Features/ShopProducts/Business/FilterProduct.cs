@@ -8,7 +8,7 @@ namespace MyCoffeeShop.Application.ShopProducts;
 
 public record FilterShopProductsCommand(string? Name,
     decimal? Price,
-    string? Description, bool? Active) : IRequest<List<ShopProductDto>>;
+    string? Description) : IRequest<List<ShopProductDto>>;
 
 internal sealed class FilterShopProductsHandler
     : IRequestHandler<FilterShopProductsCommand, List<ShopProductDto>>
@@ -39,8 +39,6 @@ internal sealed class FilterShopProductsHandler
         if (request.Price.HasValue)
             query = query.Where(u => u.Price == request.Price.Value);
 
-        if (request.Active.HasValue)
-            query = query.Where(u => u.Active == request.Active.Value);
 
         var entities = await query.ToListAsync(cancellationToken);
         return _mapper.Map<List<ShopProductDto>>(entities);

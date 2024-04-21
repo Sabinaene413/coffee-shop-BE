@@ -42,7 +42,7 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     private bool BeUniqueEmail(string email)
     {
         // Check if the email is unique in the database
-        return !_applicationDbContext.Users.Any(u => u.Email == email && u.Active);
+        return !_applicationDbContext.Users.Any(u => u.Email == email);
     }
 }
 

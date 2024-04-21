@@ -10,8 +10,7 @@ public record FilterInventorysCommand(long? Id,
     long? ShopProductId,
     long? MinimumLevel,
     string Description,
-    long? Quantity,
-    bool? Active) : IRequest<List<InventoryDto>>;
+    long? Quantity) : IRequest<List<InventoryDto>>;
 
 internal sealed class FilterInventorysHandler
     : IRequestHandler<FilterInventorysCommand, List<InventoryDto>>
@@ -49,8 +48,6 @@ internal sealed class FilterInventorysHandler
             query = query.Where(u => u.Quantity == request.Quantity.Value);
 
 
-        if (request.Active.HasValue)
-            query = query.Where(u => u.Active == request.Active.Value);
 
         var entities = await query.ToListAsync(cancellationToken);
         return _mapper.Map<List<InventoryDto>>(entities);

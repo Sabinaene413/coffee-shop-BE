@@ -14,8 +14,7 @@ public record UpdateOrderCommand(
     DateTime? OrderDate,
     DateTime? ArrivalDate,
     bool Received,
-    List<ShopProductOrderDto> ShopOrderProducts,
-    bool Active
+    List<ShopProductOrderDto> ShopOrderProducts
 ) : IRequest<ShopOrderDto>;
 
 public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
@@ -63,7 +62,6 @@ internal sealed class UpdateOrderCommandHandler
         entity.OrderDate = request.OrderDate;
         entity.ArrivalDate = request.ArrivalDate;
         entity.Received = request.Received;
-        entity.Active = request.Active;
 
         _applicationDbContext.ShopOrders.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

@@ -13,8 +13,7 @@ public record FilterOrdersCommand(
     decimal? Cost,
     DateTime? OrderDate,
     DateTime? ArrivalDate,
-    bool? Received,
-    bool? Active) : IRequest<List<ShopOrderDto>>;
+    bool? Received) : IRequest<List<ShopOrderDto>>;
 
 internal sealed class FilterOrdersHandler
     : IRequestHandler<FilterOrdersCommand, List<ShopOrderDto>>
@@ -54,8 +53,6 @@ internal sealed class FilterOrdersHandler
         if (request.Received.HasValue)
             query = query.Where(u => u.Received == request.Received.Value);
 
-        if (request.Active.HasValue)
-            query = query.Where(u => u.Active == request.Active.Value);
 
         var entities = await query.ToListAsync(cancellationToken);
         return _mapper.Map<List<ShopOrderDto>>(entities);

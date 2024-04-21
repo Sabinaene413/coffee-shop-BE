@@ -20,11 +20,10 @@ public class LoginResponse
     public string? UserName { get; set; }
     public string? Email { get; set; }
     public UserRole Role { get; set; }
-    public bool Active { get; set; }
     public string AccessToken { get; set; }
     public string RefreshToken { get; set; }
 
-    public LoginResponse(long id, string? firstName, string? lastName, string? userName, string? email, UserRole role, string accessToken, string refreshToken, bool active)
+    public LoginResponse(long id, string? firstName, string? lastName, string? userName, string? email, UserRole role, string accessToken, string refreshToken)
     {
         Id = id;
         FirstName = firstName;
@@ -34,7 +33,6 @@ public class LoginResponse
         Role = role;
         AccessToken = accessToken;
         RefreshToken = refreshToken;
-        Active = active;
     }
 }
 
@@ -72,7 +70,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
         )
         {
             var userCredential = await _applicationDbContext.UserCredentials.AsNoTracking()
-                            .Where(x => string.Compare(x.Email, request.Email) == 0 && x.Active)
+                            .Where(x => string.Compare(x.Email, request.Email) == 0)
                             .OrderByDescending(x => x.Id).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException(nameof(User), request.Email);
 
             if (
@@ -87,7 +85,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
             }
 
             var user = await _applicationDbContext.Users.AsNoTracking()
-                            .FirstOrDefaultAsync(x => x.Active && string.Compare(x.Email, request.Email) == 0, cancellationToken) ??
+                            .FirstOrDefaultAsync(x => string.Compare(x.Email, request.Email) == 0, cancellationToken) ??
                 throw new NotFoundException(nameof(User), request.Email);
 
             var accessToken = _tokenService.CreateToken(user);
@@ -110,7 +108,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
                                      user.UserName,
                                      user.Role,
                                      accessToken,
-                                     refreshToken, user.Active);
+                                     refreshToken);
         }
     }
 }

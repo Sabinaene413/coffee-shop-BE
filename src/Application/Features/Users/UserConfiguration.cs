@@ -24,7 +24,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasData(new User()
         {
             Id = 1,
-            Active = true,
             Email = "coffee_shop@gmail.com",
             FirstName = "Admin",
             LastName = "CoffeeShop",

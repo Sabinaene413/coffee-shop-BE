@@ -8,13 +8,11 @@ namespace MyCoffeeShop.Application.Employees;
 
 public record FilterEmployeesCommand(
     long? Id,
-    string Name,
-    string Address,
-    string ContactInformation,
-    string Position,
-    DateTime? BirthDate,
-    DateTime? HireDate,
-    bool? Active) : IRequest<List<EmployeeDto>>;
+    string? FirstName,
+    string? LastName,
+    decimal? Taxes,
+    decimal? SalaryBrut,
+    decimal? SalaryNet) : IRequest<List<EmployeeDto>>;
 
 internal sealed class FilterEmployeesHandler
     : IRequestHandler<FilterEmployeesCommand, List<EmployeeDto>>
@@ -40,26 +38,21 @@ internal sealed class FilterEmployeesHandler
         if (request.Id.HasValue)
             query = query.Where(u => u.Id == request.Id.Value);
 
-        if (!string.IsNullOrWhiteSpace(request.Name))
-            query = query.Where(u => !string.IsNullOrWhiteSpace(u.Name) && u.Name.Contains(request.Name));
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+            query = query.Where(u => !string.IsNullOrWhiteSpace(u.FirstName) && u.FirstName.Contains(request.FirstName));
 
-        if (!string.IsNullOrWhiteSpace(request.Address))
-            query = query.Where(u => !string.IsNullOrWhiteSpace(u.Address) && u.Address.Contains(request.Address));
+        if (!string.IsNullOrWhiteSpace(request.LastName))
+            query = query.Where(u => !string.IsNullOrWhiteSpace(u.LastName) && u.LastName.Contains(request.LastName));
 
-        if (!string.IsNullOrWhiteSpace(request.Position))
-            query = query.Where(u => !string.IsNullOrWhiteSpace(u.Position) && u.Position.Contains(request.Position));
+        if (request.Taxes.HasValue)
+            query = query.Where(u => u.Taxes == request.Taxes.Value);
 
-        if (!string.IsNullOrWhiteSpace(request.ContactInformation))
-            query = query.Where(u => !string.IsNullOrWhiteSpace(u.ContactInformation) && u.ContactInformation.Contains(request.ContactInformation));
+        if (request.SalaryBrut.HasValue)
+            query = query.Where(u => u.SalaryBrut == request.SalaryBrut.Value);
 
-        if (request.BirthDate.HasValue)
-            query = query.Where(u => u.BirthDate == request.BirthDate.Value);
+        if (request.SalaryNet.HasValue)
+            query = query.Where(u => u.SalaryNet == request.SalaryNet.Value);
 
-        if (request.HireDate.HasValue)
-            query = query.Where(u => u.HireDate == request.HireDate.Value);
-
-        if (request.Active.HasValue)
-            query = query.Where(u => u.Active == request.Active.Value);
 
         var entities = await query.ToListAsync(cancellationToken);
         return _mapper.Map<List<EmployeeDto>>(entities);

@@ -12,8 +12,7 @@ public record UpdateInventoryCommand(
     long ShopProductId,
     long? MinimumLevel,
     string Description,
-    long Quantity,
-    bool Active
+    long Quantity
 ) : IRequest<InventoryDto>;
 
 public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventoryCommand>
@@ -53,7 +52,6 @@ internal sealed class UpdateInventoryCommandHandler
         entity.MinimumLevel = request.MinimumLevel;
         entity.Description = request.Description;
         entity.Quantity = request.Quantity;
-        entity.Active = request.Active;
 
         _applicationDbContext.Inventories.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

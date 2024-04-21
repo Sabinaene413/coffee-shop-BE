@@ -13,7 +13,6 @@ public class FilterUsersCommand : IRequest<List<UserDto>>
     public string? LastName { get; set; }
     public string? Email { get; set; }
     public string? UserName { get; set; }
-    public bool Active { get; set; }
     public int PageNumber { get; set; } 
     public int PageSize { get; set; } 
 
@@ -22,7 +21,6 @@ public class FilterUsersCommand : IRequest<List<UserDto>>
         string? lastName,
         string? email,
         string? userName,
-        bool active,
         int pageNumber = 1,
         int pageSize = 15)
     {
@@ -30,7 +28,6 @@ public class FilterUsersCommand : IRequest<List<UserDto>>
         LastName = lastName;
         Email = email;
         UserName = userName;
-        Active = active;
         PageNumber = pageNumber;
         PageSize = pageSize;
     }
@@ -84,8 +81,6 @@ internal sealed class FilterUsersHandler : IRequestHandler<FilterUsersCommand, L
         if (!string.IsNullOrWhiteSpace(request.UserName))
             query = query.Where(u => !string.IsNullOrWhiteSpace(u.UserName) && u.UserName.Contains(request.UserName));
 
-        if (request.Active)
-            query = query.Where(u => u.Active);
 
         // Paging
         int skip = (request.PageNumber - 1) * request.PageSize;

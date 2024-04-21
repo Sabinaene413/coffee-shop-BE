@@ -182,7 +182,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     b.Property<long?>("CreatedBy")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("OrderId")
+                    b.Property<long>("ShopOrderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("PaymentStatus")
@@ -199,12 +199,12 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("ShopOrderId");
 
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Orders.Order", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrders.ShopOrder", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -237,10 +237,10 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("ShopOrders");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Orders.OrderItem", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrders.ShopProductOrder", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -257,7 +257,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     b.Property<long?>("CreatedBy")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("OrderId")
+                    b.Property<long>("ShopOrderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("ProductId")
@@ -277,12 +277,12 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("ShopOrderId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("ShopProductOrder");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Products.Product", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrderProducts.ShopProduct", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -318,7 +318,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("ShopOrderProducts");
                 });
 
             modelBuilder.Entity("MyCoffeeShop.Application.TransactionTypes.TransactionType", b =>
@@ -621,7 +621,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Order")
+                    b.Property<int>("ShopOrder")
                         .HasColumnType("int");
 
                     b.Property<long?>("ParentId")
@@ -766,27 +766,27 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("MyCoffeeShop.Application.Inventories.Inventory", b =>
                 {
-                    b.HasOne("MyCoffeeShop.Application.Products.Product", "Product")
+                    b.HasOne("MyCoffeeShop.Application.ShopOrderProducts.ShopProduct", "ShopProduct")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("ShopProduct");
                 });
 
             modelBuilder.Entity("MyCoffeeShop.Application.Invoices.Invoice", b =>
                 {
-                    b.HasOne("MyCoffeeShop.Application.Orders.Order", "Order")
+                    b.HasOne("MyCoffeeShop.Application.ShopOrders.ShopOrder", "ShopOrder")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("ShopOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("ShopOrder");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Orders.Order", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrders.ShopOrder", b =>
                 {
                     b.HasOne("MyCoffeeShop.Application.Customers.Customer", "Customer")
                         .WithMany()
@@ -797,15 +797,15 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Orders.OrderItem", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrders.ShopProductOrder", b =>
                 {
-                    b.HasOne("MyCoffeeShop.Application.Orders.Order", "Order")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("MyCoffeeShop.Application.ShopOrders.ShopOrder", "ShopOrder")
+                        .WithMany("ShopOrderProducts")
+                        .HasForeignKey("ShopOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("ShopOrder");
                 });
 
             modelBuilder.Entity("MyCoffeeShop.Application.Transactions.Transaction", b =>
@@ -871,9 +871,9 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     b.Navigation("UiRoute");
                 });
 
-            modelBuilder.Entity("MyCoffeeShop.Application.Orders.Order", b =>
+            modelBuilder.Entity("MyCoffeeShop.Application.ShopOrders.ShopOrder", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("ShopOrderProducts");
                 });
 
             modelBuilder.Entity("MyCoffeeShop.Application.UIComponents.UIComponent", b =>

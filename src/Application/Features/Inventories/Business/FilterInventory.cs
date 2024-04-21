@@ -7,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace MyCoffeeShop.Application.Inventories;
 
 public record FilterInventorysCommand(long? Id,
-    long? ProductId,
+    long? ShopProductId,
     long? MinimumLevel,
-    DateTime? ExpiryDate,
     string Description,
     long? Quantity,
     bool? Active) : IRequest<List<InventoryDto>>;
@@ -40,8 +39,8 @@ internal sealed class FilterInventorysHandler
         if (request.Id.HasValue)
             query = query.Where(u => u.Id == request.Id.Value);
 
-        if (request.ProductId.HasValue)
-            query = query.Where(u => u.ProductId == request.ProductId.Value);
+        if (request.ShopProductId.HasValue)
+            query = query.Where(u => u.ShopProductId == request.ShopProductId.Value);
 
         if (request.MinimumLevel.HasValue)
             query = query.Where(u => u.MinimumLevel == request.MinimumLevel.Value);
@@ -49,8 +48,6 @@ internal sealed class FilterInventorysHandler
         if (request.Quantity.HasValue)
             query = query.Where(u => u.Quantity == request.Quantity.Value);
 
-        if (request.ExpiryDate.HasValue)
-            query = query.Where(u => u.ExpiryDate == request.ExpiryDate.Value);
 
         if (request.Active.HasValue)
             query = query.Where(u => u.Active == request.Active.Value);

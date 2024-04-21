@@ -1,6 +1,6 @@
 ﻿using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Mappings;
-using MyCoffeeShop.Application.Products;
+using MyCoffeeShop.Application.ShopProducts;
 
 namespace MyCoffeeShop.Application.Inventories;
 
@@ -10,21 +10,19 @@ public class Inventory : BaseEntity
     {
     }
 
-    public long ProductId { get; set; }
+    public long ShopProductId { get; set; }
     public long Quantity { get; set; }
     public string Description { get; set; }
     public long? MinimumLevel { get; set; }
-    public DateTime ExpiryDate { get; set; }
-    public virtual Product Product { get; set; }
+    public virtual ShopProduct ShopProduct { get; set; }
 }
 
 public class InventoryDto : IMapFrom<Inventory>
 {
     public long Id { get; set; }
-    public long ProductId { get; set; }
+    public long ShopProductId { get; set; }
     public long Quantity { get; set; }
     public string Description { get; set; }
     public long? MinimumLevel { get; set; }
-    public DateTime ExpiryDate { get; set; }
 
 }

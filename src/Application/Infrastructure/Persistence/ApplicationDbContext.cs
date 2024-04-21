@@ -4,16 +4,10 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Interfaces;
 using MyCoffeeShop.Application.Users;
-using MyCoffeeShop.Application.UIRoutes;
-using MyCoffeeShop.Application.UISideMenuItems;
-using MyCoffeeShop.Application.UISideMenuItemPermissions;
-using MyCoffeeShop.Application.UIComponents;
-using MyCoffeeShop.Application.UIComponentPermissions;
-using MyCoffeeShop.Application.Products;
-using MyCoffeeShop.Application.Orders;
+using MyCoffeeShop.Application.ShopProducts;
+using MyCoffeeShop.Application.ShopOrders;
 using MyCoffeeShop.Application.TransactionTypes;
 using MyCoffeeShop.Application.Employees;
-using MyCoffeeShop.Application.Invoices;
 using MyCoffeeShop.Application.Customers;
 using MyCoffeeShop.Application.Inventories;
 using MyCoffeeShop.Application.Transactions;
@@ -39,18 +33,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
-    public DbSet<Invoice> Invoices => Set<Invoice>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
-    public DbSet<Order> Orders => Set<Order>();
-    public DbSet<Product> Products => Set<Product>();
+    public DbSet<ShopOrder> ShopOrders => Set<ShopOrder>();
+    public DbSet<ShopProductOrder> ShopProductOrders => Set<ShopProductOrder>();
+    public DbSet<ShopProduct> ShopProducts => Set<ShopProduct>();
     public DbSet<UserCredential> UserCredentials => Set<UserCredential>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<UIComponent> UIComponents => Set<UIComponent>();
-    public DbSet<UIComponentPermission> UIComponentPermissions => Set<UIComponentPermission>();
-    public DbSet<UIRoute> UIRoutes => Set<UIRoute>();
-    public DbSet<UISideMenuItem> UISideMenuItems => Set<UISideMenuItem>();
-    public DbSet<UISideMenuItemPermission> UISideMenuItemPermissions => Set<UISideMenuItemPermission>();
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {

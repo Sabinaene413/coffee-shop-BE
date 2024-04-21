@@ -10,9 +10,9 @@ public class Transaction : BaseEntity
     {
     }
 
-    //Order Invoice, Producer Order Invoice
+    //ShopOrder Invoice, Producer ShopOrder Invoice
     public long? InvoiceId { get; set; }
-    public long? ProductId { get; set; }
+    public long? ShopProductId { get; set; }
     public long? Quantity { get; set; }
     public decimal Value { get; set; }
     // IN/OUT
@@ -24,7 +24,7 @@ public class Transaction : BaseEntity
 public class TransactionDto : IMapFrom<Transaction>
 {
     public long Id { get; set; }
-    public long ProductId { get; set; }
+    public long ShopProductId { get; set; }
     public long Quantity { get; set; }
     public decimal Value { get; set; }
     public long TransactionTypeId { get; set; }

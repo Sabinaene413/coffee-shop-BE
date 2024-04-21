@@ -6,9 +6,8 @@ using MyCoffeeShop.Application.Infrastructure.Persistence;
 namespace MyCoffeeShop.Application.Inventories;
 
 public record CreateInventoryCommand(
-    long ProductId,
+    long ShopProductId,
     long? MinimumLevel,
-    DateTime ExpiryDate,
     string Description,
     long Quantity
 ) : IRequest<InventoryDto>;
@@ -17,9 +16,8 @@ public class CreateInventoryCommandValidator : AbstractValidator<CreateInventory
 {
     public CreateInventoryCommandValidator()
     {
-        RuleFor(v => v.ProductId).NotEmpty();
+        RuleFor(v => v.ShopProductId).NotEmpty();
         RuleFor(v => v.Quantity).NotEmpty();
-        RuleFor(v => v.ExpiryDate).NotEmpty();
     }
 }
 
@@ -45,11 +43,10 @@ internal sealed class CreateInventoryCommandHandler
     {
         var entity = new Inventory
         {
-            ProductId = request.ProductId,
+            ShopProductId = request.ShopProductId,
             Quantity = request.Quantity,
             MinimumLevel = request.MinimumLevel,
             Description = request.Description,
-            ExpiryDate = request.ExpiryDate
         };
 
         await _applicationDbContext.Inventories.AddAsync(entity, cancellationToken);

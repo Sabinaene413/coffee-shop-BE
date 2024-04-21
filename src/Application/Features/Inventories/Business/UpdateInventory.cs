@@ -9,9 +9,8 @@ namespace MyCoffeeShop.Application.Inventories;
 
 public record UpdateInventoryCommand(
     long Id,
-    long ProductId,
+    long ShopProductId,
     long? MinimumLevel,
-    DateTime ExpiryDate,
     string Description,
     long Quantity,
     bool Active
@@ -21,9 +20,8 @@ public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventory
 {
     public UpdateInventoryCommandValidator()
     {
-        RuleFor(v => v.ProductId).NotEmpty();
+        RuleFor(v => v.ShopProductId).NotEmpty();
         RuleFor(v => v.Quantity).NotEmpty();
-        RuleFor(v => v.ExpiryDate).NotEmpty();
     }
 }
 
@@ -51,9 +49,8 @@ internal sealed class UpdateInventoryCommandHandler
                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
                ?? throw new NotFoundException(nameof(Inventory), request.Id);
 
-        entity.ProductId = request.ProductId;
+        entity.ShopProductId = request.ShopProductId;
         entity.MinimumLevel = request.MinimumLevel;
-        entity.ExpiryDate = request.ExpiryDate;
         entity.Description = request.Description;
         entity.Quantity = request.Quantity;
         entity.Active = request.Active;

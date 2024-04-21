@@ -58,7 +58,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "ShopOrderProducts",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -119,7 +119,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "ShopOrders",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -166,7 +166,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Inventories_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Products",
+                        principalTable: "ShopOrderProducts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -275,13 +275,13 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Invoices_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Orders",
+                        principalTable: "ShopOrders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderItem",
+                name: "ShopProductOrder",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -302,7 +302,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_OrderItem_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Orders",
+                        principalTable: "ShopOrders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -390,16 +390,16 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Invoices_OrderId",
                 table: "Invoices",
-                column: "OrderId");
+                column: "ShopOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItem_OrderId",
-                table: "OrderItem",
-                column: "OrderId");
+                table: "ShopProductOrder",
+                column: "ShopOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
-                table: "Orders",
+                table: "ShopOrders",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
@@ -442,7 +442,7 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                 name: "Invoices");
 
             migrationBuilder.DropTable(
-                name: "OrderItem");
+                name: "ShopProductOrder");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -451,10 +451,10 @@ namespace MyCoffeeShop.Application.Infrastructure.Persistence.Migrations
                 name: "UIComponentPermissions");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ShopOrderProducts");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "ShopOrders");
 
             migrationBuilder.DropTable(
                 name: "TransactionTypes");

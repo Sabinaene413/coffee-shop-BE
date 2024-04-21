@@ -34,7 +34,7 @@ public class TokenService
     public string CreateToken(User user)
     {
 
-        var expiration = DateTime.Now.AddMinutes(_tokenConfigurations.ExpirationMinutes);
+        var expiration = DateTime.UtcNow.AddMinutes(_tokenConfigurations.ExpirationMinutes);
         var token = CreateJwtToken(CreateClaims(user), CreateSigningCredentials(), expiration);
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
@@ -53,7 +53,7 @@ public class TokenService
             issuer: issuer,
             audience: audience,
             claims: claims,
-            expires: DateTime.MaxValue,
+            expires: expiration,
             signingCredentials: credentials
         );
     }

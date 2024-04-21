@@ -1,11 +1,12 @@
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MyCoffeeShop.Application.Common.Abstracts;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 [Produces("application/json")] // Specifies the response format for all actions in the controller
 public abstract class ApiControllerBase : ControllerBase

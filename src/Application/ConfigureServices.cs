@@ -56,7 +56,7 @@ public static class DependencyInjection
     {
         services.AddSwaggerGen(option =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "MyCoffeeShop Api", Version = "v1" });
             option.AddSecurityDefinition(
                 "Bearer",
                 new OpenApiSecurityScheme
@@ -114,6 +114,7 @@ public static class DependencyInjection
                     ValidateLifetime = true,
                     ValidIssuer = tokenConfig.Issuer,
                     ValidAudience = tokenConfig.Audience,
+                    RequireExpirationTime = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfig.Secret)),
                 };
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

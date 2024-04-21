@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MyCoffeeShop.Application.Users
 {
-    //[Authorize] // Requires authorization for all actions in the controller
     public class UserController : ApiControllerBase
     {
         // API endpoint for creating a new user

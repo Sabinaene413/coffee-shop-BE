@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
+using MyCoffeeShop.Application.Inventories;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
@@ -59,7 +60,21 @@ internal sealed class CreateOrderCommandHandler
             }).ToList()
         };
 
+        
         await _applicationDbContext.ShopOrders.AddAsync(entity, cancellationToken);
+        
+        if (entity.Received)
+        {
+            var newInventories = entity.ShopOrderProducts.Select(y => new Inventory()
+            {
+                Description = $"Comanda {entity.Id} Primita",
+                MinimumLevel = 10,
+                Quantity = y.Quantity,
+                ShopProductId = y.ShopProductId,
+            }).ToList();
+            await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
+        }
+
         return _mapper.Map<ShopOrderDto>(entity);
     }
 }

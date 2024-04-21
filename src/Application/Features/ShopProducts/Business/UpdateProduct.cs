@@ -4,7 +4,6 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
-using MyCoffeeShop.Application.UIComponents;
 
 namespace MyCoffeeShop.Application.ShopProducts;
 

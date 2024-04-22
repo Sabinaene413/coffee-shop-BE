@@ -59,6 +59,7 @@ internal sealed class CreateEmployeeCommandHandler
         };
 
         await _applicationDbContext.Employees.AddAsync(entity, cancellationToken);
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<EmployeeDto>(entity);
     }
 }

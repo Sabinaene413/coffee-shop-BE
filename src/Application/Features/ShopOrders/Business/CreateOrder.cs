@@ -62,7 +62,8 @@ internal sealed class CreateOrderCommandHandler
 
         
         await _applicationDbContext.ShopOrders.AddAsync(entity, cancellationToken);
-        
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
         if (entity.Received)
         {
             var newInventories = entity.ShopOrderProducts.Select(y => new Inventory()
@@ -74,6 +75,7 @@ internal sealed class CreateOrderCommandHandler
             }).ToList();
             await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
         }
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ShopOrderDto>(entity);
     }

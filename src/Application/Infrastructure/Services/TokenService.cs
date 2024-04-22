@@ -71,6 +71,7 @@ public class TokenService
                 new Claim(SystemClaimType.UCID, user.UserCredentialId.ToString()),
                 new Claim(SystemClaimType.FirstName, user.FirstName ?? ""),
                 new Claim(SystemClaimType.LastName, user.LastName ?? ""),
+                new Claim(SystemClaimType.Email, user.Email ?? ""),
                 new Claim(SystemClaimType.RoleId, user.Role.ToString())
             };
             return claims;

@@ -79,6 +79,7 @@ internal sealed class UpdateOrderCommandHandler
                 ShopProductId = y.ShopProductId,
             }).ToList();
             await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
         }
 
         return _mapper.Map<ShopOrderDto>(entity);

@@ -48,6 +48,7 @@ internal sealed class CreateShopProductCommandHandler
         };
 
         await _applicationDbContext.ShopProducts.AddAsync(entity, cancellationToken);
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<ShopProductDto>(entity);
     }
 }

@@ -57,6 +57,7 @@ internal sealed class FilterOrdersHandler
         var entities = await query.ToListAsync(cancellationToken);
         return entities.Select(x => new ShopOrderDto()
         {
+            Id = x.Id,
             ArrivalDate = x.ArrivalDate,
             Cost = x.Cost,
             OrderDate = x.OrderDate,

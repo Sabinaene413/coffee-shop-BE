@@ -38,8 +38,8 @@ internal sealed class FilterOrdersHandler
         if (request.Id.HasValue)
             query = query.Where(u => u.Id == request.Id.Value);
 
-        if (!request.Supplier.IsNullOrEmpty())
-            query = query.Where(u => u.Supplier == request.Supplier);
+        if (request.Supplier != null && request.Supplier != string.Empty)
+            query = query.Where(u => u.Supplier.ToLower().Contains(request.Supplier.ToLower()));
 
         if (request.Cost.HasValue)
             query = query.Where(u => u.Cost == request.Cost.Value);
@@ -55,6 +55,13 @@ internal sealed class FilterOrdersHandler
 
 
         var entities = await query.ToListAsync(cancellationToken);
-        return _mapper.Map<List<ShopOrderDto>>(entities);
+        return entities.Select(x => new ShopOrderDto()
+        {
+            ArrivalDate = x.ArrivalDate,
+            Cost = x.Cost,
+            OrderDate = x.OrderDate,
+            Received = x.Received,
+            Supplier = x.Supplier
+        }).ToList();
     }
 }

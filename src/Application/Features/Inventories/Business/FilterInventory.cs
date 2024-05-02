@@ -9,7 +9,7 @@ namespace MyCoffeeShop.Application.Inventories;
 public record FilterInventorysCommand(long? Id,
     long? ShopProductId,
     long? MinimumLevel,
-    string Description,
+    string? Description,
     long? Quantity) : IRequest<List<InventoryDto>>;
 
 internal sealed class FilterInventorysHandler

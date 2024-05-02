@@ -50,6 +50,7 @@ internal sealed class CreateInventoryCommandHandler
         };
 
         await _applicationDbContext.Inventories.AddAsync(entity, cancellationToken);
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<InventoryDto>(entity);
     }
 }

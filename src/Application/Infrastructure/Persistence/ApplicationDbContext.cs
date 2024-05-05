@@ -11,6 +11,7 @@ using MyCoffeeShop.Application.Employees;
 using MyCoffeeShop.Application.Inventories;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.SaleProducts;
+using MyCoffeeShop.Application.SaleOrders;
 
 namespace MyCoffeeShop.Application.Infrastructure.Persistence;
 
@@ -31,6 +32,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<SaleOrder> SaleOrders => Set<SaleOrder>();
     public DbSet<ShopOrder> ShopOrders => Set<ShopOrder>();
     public DbSet<ShopProductOrder> ShopProductOrders => Set<ShopProductOrder>();
     public DbSet<ShopProduct> ShopProducts => Set<ShopProduct>();

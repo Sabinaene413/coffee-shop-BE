@@ -12,7 +12,7 @@ public record UpdateEmployeeCommand(
     long Id,
     string? FirstName,
     string? LastName,
-    IFormFile File,
+    IFormFile? File,
     decimal? Taxes,
     decimal? SalaryBrut,
     decimal? SalaryNet
@@ -49,12 +49,15 @@ internal sealed class UpdateEmployeeCommandHandler
                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
                ?? throw new NotFoundException(nameof(Employee), request.Id);
 
-        string filename = request.File.FileName;
-        filename = Path.GetFileName(filename);
-        string uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", filename);
-        var stream = new FileStream(uploadfilepath, FileMode.Create);
-        await request.File.CopyToAsync(stream, cancellationToken);
-
+        string uploadfilepath = null;
+        if (request.File != null)
+        {
+            string filename = request.File.FileName;
+            filename = Path.GetFileName(filename);
+            uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", filename);
+            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            await request.File.CopyToAsync(stream, cancellationToken);
+        }
         entity.FilePath = uploadfilepath;
         entity.SalaryNet = request.SalaryNet;
         entity.SalaryBrut = request.SalaryBrut;

@@ -9,7 +9,7 @@ namespace MyCoffeeShop.Application.Employees;
 public record CreateEmployeeCommand(
     string? FirstName,
     string? LastName,
-    IFormFile File,
+    IFormFile? File,
     decimal? Taxes,
     decimal? SalaryBrut,
     decimal? SalaryNet
@@ -42,11 +42,20 @@ internal sealed class CreateEmployeeCommandHandler
         CancellationToken cancellationToken
     )
     {
-        string filename = request.File.FileName;
-        filename = Path.GetFileName(filename);
-        string uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati", filename);
-        var stream = new FileStream(uploadfilepath, FileMode.Create);
-        await request.File.CopyToAsync(stream, cancellationToken);
+        string uploadfilepath = null;
+        if (request.File != null)
+        {
+            string filename = request.File.FileName;
+            filename = Path.GetFileName(filename);
+            uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati", filename);
+
+            // Check if the directory exists, if not, create it
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati")))
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati"));
+
+            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            await request.File.CopyToAsync(stream, cancellationToken);
+        }
 
         var entity = new Employee
         {

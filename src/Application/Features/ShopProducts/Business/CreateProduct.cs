@@ -8,7 +8,7 @@ namespace MyCoffeeShop.Application.ShopProducts;
 public record CreateShopProductCommand(
     string Name,
     decimal Price,
-    string Description
+    string? Description
 ) : IRequest<ShopProductDto>;
 
 public class CreateShopProductCommandValidator : AbstractValidator<CreateShopProductCommand>

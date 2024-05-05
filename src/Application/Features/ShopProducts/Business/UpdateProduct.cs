@@ -11,7 +11,7 @@ public record UpdateShopProductCommand(
     long Id,
     string Name,
     decimal Price,
-    string Description
+    string? Description
 ) : IRequest<ShopProductDto>;
 
 public class UpdateShopProductCommandValidator : AbstractValidator<UpdateShopProductCommand>

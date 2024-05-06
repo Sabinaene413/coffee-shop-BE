@@ -9,9 +9,9 @@ namespace MyCoffeeShop.Application.Common.Behaviours;
 public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
     private readonly ILogger _logger;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IHttpContextAccesorService _currentUserService;
 
-    public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService)
+    public LoggingBehaviour(ILogger<TRequest> logger, IHttpContextAccesorService currentUserService)
     {
         _logger = logger;
         _currentUserService = currentUserService;

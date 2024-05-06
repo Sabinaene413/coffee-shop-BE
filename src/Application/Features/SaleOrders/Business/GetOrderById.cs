@@ -6,21 +6,21 @@ using MyCoffeeShop.Application.Common.Exceptions;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
-public record GetOrderByIdCommand(long Id) : IRequest<SaleOrderDto>;
+public record GetSaleOrderByIdCommand(long Id) : IRequest<SaleOrderDto>;
 
-internal sealed class GetByIdHandler : IRequestHandler<GetOrderByIdCommand, SaleOrderDto>
+internal sealed class GetSaleByIdHandler : IRequestHandler<GetSaleOrderByIdCommand, SaleOrderDto>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
 
-    public GetByIdHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
+    public GetSaleByIdHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
     }
 
     public async Task<SaleOrderDto> Handle(
-        GetOrderByIdCommand request,
+        GetSaleOrderByIdCommand request,
         CancellationToken cancellationToken
     )
     {

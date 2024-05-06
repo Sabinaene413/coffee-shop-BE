@@ -12,11 +12,11 @@ public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequ
 {
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IHttpContextAccesorService _currentUserService;
 
     public PerformanceBehaviour(
         ILogger<TRequest> logger,
-        ICurrentUserService currentUserService)
+        IHttpContextAccesorService currentUserService)
     {
         _timer = new Stopwatch();
 

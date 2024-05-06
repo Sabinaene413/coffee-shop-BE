@@ -3,7 +3,7 @@ using MyCoffeeShop.Application.Common.Mappings;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
-public class ShopOrder : BaseEntity
+public class ShopOrder : BaseLocationEntity
 {
     public ShopOrder()
     {
@@ -19,6 +19,8 @@ public class ShopOrder : BaseEntity
 public class ShopOrderDto : IMapFrom<ShopOrder>
 {
     public long Id { get; set; }
+    public long? LocationId { get; set; }
+    public string? LocationName { get; set; }
     public string Supplier { get; set; }
     public decimal Cost { get; set; }
     public DateTime? OrderDate { get; set; }

@@ -5,7 +5,7 @@ using MyCoffeeShop.Application.ShopOrders;
 
 namespace MyCoffeeShop.Application.ShopProducts;
 
-public class ShopProduct : BaseEntity
+public class ShopProduct : BaseLocationEntity
 {
     public ShopProduct()
     {
@@ -22,6 +22,8 @@ public class ShopProduct : BaseEntity
 public class ShopProductDto : IMapFrom<ShopProduct>
 {
     public required long Id { get; set; }
+    public long? LocationId { get; set; }
+    public string? LocationName { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
     public string Description { get; set; }

@@ -9,7 +9,7 @@ namespace MyCoffeeShop.Application.SaleOrders
         [HttpPost("Create")]
         [ProducesResponseType(typeof(SaleOrderDto), 200)] // Specifies the response type for successful creation
         public async Task<ActionResult<SaleOrderDto>> Create(
-            [FromBody] CreateOrderCommand command, // Request body parameter
+            [FromBody] CreateSaleOrderCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {
@@ -24,7 +24,7 @@ namespace MyCoffeeShop.Application.SaleOrders
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {
-            await Mediator.Send(new DeleteOrderCommand { Id = id }, cancellationToken); // Executes the delete command
+            await Mediator.Send(new DeleteSaleOrderCommand { Id = id }, cancellationToken); // Executes the delete command
             return NoContent(); // Returns HTTP 204 No Content status
         }
 
@@ -32,7 +32,7 @@ namespace MyCoffeeShop.Application.SaleOrders
         [HttpPost("GetById")]
         [ProducesResponseType(typeof(SaleOrderDto), 200)] // Specifies the response type for successful retrieval
         public async Task<ActionResult<SaleOrderDto>> GetById(
-            [FromBody] GetOrderByIdCommand command, // Request body parameter
+            [FromBody] GetSaleOrderByIdCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {
@@ -44,7 +44,7 @@ namespace MyCoffeeShop.Application.SaleOrders
         [HttpPost("Filter")]
         [ProducesResponseType(typeof(List<SaleOrder>), 200)] // Specifies the response type for successful filtering
         public async Task<ActionResult<List<SaleOrder>>> Filter(
-            [FromBody] FilterOrdersCommand command, // Request body parameter
+            [FromBody] FilterSaleOrdersCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {
@@ -55,7 +55,7 @@ namespace MyCoffeeShop.Application.SaleOrders
         [HttpPut("Update")]
         [ProducesResponseType(typeof(SaleOrderDto), 200)] // Specifies the response type for successful update
         public async Task<ActionResult> Update(
-            [FromBody] UpdateOrderCommand command, // Request body parameter
+            [FromBody] UpdateSaleOrderCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {

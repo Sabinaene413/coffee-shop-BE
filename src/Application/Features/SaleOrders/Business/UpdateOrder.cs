@@ -8,23 +8,23 @@ using MyCoffeeShop.Application.Inventories;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
-public record UpdateOrderCommand(
+public record UpdateSaleOrderCommand(
     long Id,
     decimal Cost,
     DateTime? OrderDate,
     List<SaleProductOrderDto> SaleOrderProducts
 ) : IRequest<SaleOrderDto>;
 
-public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
+public class UpdateSaleOrderCommandValidator : AbstractValidator<UpdateSaleOrderCommand>
 {
-    public UpdateOrderCommandValidator()
+    public UpdateSaleOrderCommandValidator()
     {
         RuleFor(v => v.Cost).NotEmpty();
     }
 }
 
 internal sealed class UpdateOrderCommandHandler
-    : IRequestHandler<UpdateOrderCommand, SaleOrderDto>
+    : IRequestHandler<UpdateSaleOrderCommand, SaleOrderDto>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
@@ -39,7 +39,7 @@ internal sealed class UpdateOrderCommandHandler
     }
 
     public async Task<SaleOrderDto> Handle(
-        UpdateOrderCommand request,
+        UpdateSaleOrderCommand request,
         CancellationToken cancellationToken
     )
     {

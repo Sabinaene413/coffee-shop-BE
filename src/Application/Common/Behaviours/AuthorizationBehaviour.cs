@@ -10,10 +10,10 @@ namespace MyCoffeeShop.Application.Common.Behaviours;
 public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IHttpContextAccesorService _currentUserService;
 
     public AuthorizationBehaviour(
-        ICurrentUserService currentUserService)
+        IHttpContextAccesorService currentUserService)
     {
         _currentUserService = currentUserService;
     }

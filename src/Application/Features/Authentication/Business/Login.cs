@@ -7,10 +7,11 @@ using MyCoffeeShop.Application.Common.Exceptions;
 using MyCoffeeShop.Application.Infrastructure.Services;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using MyCoffeeShop.Application.CoffeeShops;
 
 namespace MyCoffeeShop.Application.Features.Authentications.Business;
 
-public record LoginCommand(string Email, string Password) : IRequest<LoginResponse>;
+public record LoginCommand(string Email, string Password, long? LocationId) : IRequest<LoginResponse>;
 
 public class LoginResponse
 {
@@ -88,7 +89,10 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
                             .FirstOrDefaultAsync(x => string.Compare(x.Email, request.Email) == 0, cancellationToken) ??
                 throw new NotFoundException(nameof(User), request.Email);
 
-            var accessToken = _tokenService.CreateToken(user);
+            var locationDto = request.LocationId.HasValue ? _mapper.Map<CoffeeShopDto>(await _applicationDbContext.CoffeeShops.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == request.LocationId, cancellationToken)) : null;
+
+            var accessToken = _tokenService.CreateToken(user, locationDto);
             var refreshToken = _tokenService.GenerateRefreshToken();
             var refreshTokenValidityInDays = Int32.Parse(
                 _configuration["TokenConfig:RefreshTokenValidityInDays"]

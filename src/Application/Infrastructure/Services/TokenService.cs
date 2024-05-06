@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyCoffeeShop.Application.Features.Authentications;
 using Microsoft.Extensions.Logging;
+using MyCoffeeShop.Application.Features.CoffeeShop;
+using MyCoffeeShop.Application.CoffeeShops;
 
 namespace MyCoffeeShop.Application.Infrastructure.Services;
 
@@ -31,11 +33,11 @@ public class TokenService
 #pragma warning restore CS8601 // Possible null reference assignment.
     }
 
-    public string CreateToken(User user)
+    public string CreateToken(User user, CoffeeShopDto coffeeShop = null)
     {
 
         var expiration = DateTime.UtcNow.AddMinutes(_tokenConfigurations.ExpirationMinutes);
-        var token = CreateJwtToken(CreateClaims(user), CreateSigningCredentials(), expiration);
+        var token = CreateJwtToken(CreateClaims(user, coffeeShop), CreateSigningCredentials(), expiration);
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);
     }
@@ -58,7 +60,7 @@ public class TokenService
         );
     }
 
-    private List<Claim> CreateClaims(User user)
+    private List<Claim> CreateClaims(User user, CoffeeShopDto? coffeShop = null)
     {
         try
         {
@@ -74,6 +76,13 @@ public class TokenService
                 new Claim(SystemClaimType.Email, user.Email ?? ""),
                 new Claim(SystemClaimType.RoleId, user.Role.ToString())
             };
+
+            if (coffeShop != null)
+            {
+                claims.Add(new Claim(Constants.LocationId, coffeShop.Id.ToString()));
+                claims.Add(new Claim(Constants.LocationName, coffeShop.Name.ToString()));
+            }
+
             return claims;
         }
         catch (Exception e)

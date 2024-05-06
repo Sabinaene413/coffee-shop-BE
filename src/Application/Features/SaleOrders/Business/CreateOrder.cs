@@ -2,19 +2,18 @@
 using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
-using MyCoffeeShop.Application.Inventories;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
-public record CreateOrderCommand(
+public record CreateSaleOrderCommand(
     decimal Cost,
     DateTime? OrderDate,
     List<SaleProductOrderDto> SaleOrderProducts
 ) : IRequest<SaleOrderDto>;
 
-public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
+public class CreateSaleOrderCommandValidator : AbstractValidator<CreateSaleOrderCommand>
 {
-    public CreateOrderCommandValidator()
+    public CreateSaleOrderCommandValidator()
     {
         RuleFor(v => v.Cost).NotEmpty();
         RuleFor(v => v.SaleOrderProducts).NotEmpty();
@@ -22,7 +21,7 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 }
 
 internal sealed class CreateOrderCommandHandler
-    : IRequestHandler<CreateOrderCommand, SaleOrderDto>
+    : IRequestHandler<CreateSaleOrderCommand, SaleOrderDto>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
@@ -37,7 +36,7 @@ internal sealed class CreateOrderCommandHandler
     }
 
     public async Task<SaleOrderDto> Handle(
-        CreateOrderCommand request,
+        CreateSaleOrderCommand request,
         CancellationToken cancellationToken
     )
     {

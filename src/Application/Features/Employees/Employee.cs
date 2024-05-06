@@ -3,7 +3,7 @@ using MyCoffeeShop.Application.Common.Mappings;
 
 namespace MyCoffeeShop.Application.Employees;
 
-public class Employee : BaseEntity
+public class Employee : BaseLocationEntity
 {
     public Employee()
     {
@@ -27,4 +27,6 @@ public class EmployeeDto : IMapFrom<Employee>
     public decimal? SalaryNet { get; set; }
     public decimal? SalaryBrut { get; set; }
     public decimal? Taxes { get; set; }
+    public long? LocationId { get; set; }
+    public string? LocationName { get; set; }
 }

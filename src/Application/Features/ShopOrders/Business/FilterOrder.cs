@@ -62,7 +62,9 @@ internal sealed class FilterOrdersHandler
             Cost = x.Cost,
             OrderDate = x.OrderDate,
             Received = x.Received,
-            Supplier = x.Supplier
+            Supplier = x.Supplier,
+            LocationId = x.LocationId,
+            LocationName = x.LocationName,
         }).ToList();
     }
 }

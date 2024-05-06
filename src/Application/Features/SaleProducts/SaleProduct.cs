@@ -4,7 +4,7 @@ using MyCoffeeShop.Application.SaleOrders;
 
 namespace MyCoffeeShop.Application.SaleProducts;
 
-public class SaleProduct : BaseEntity
+public class SaleProduct : BaseLocationEntity
 {
     public SaleProduct()
     {
@@ -20,6 +20,8 @@ public class SaleProduct : BaseEntity
 public class SaleProductDto : IMapFrom<SaleProduct>
 {
     public required long Id { get; set; }
+    public long? LocationId { get; set; }
+    public string? LocationName { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
     public string Description { get; set; }

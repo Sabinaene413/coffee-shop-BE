@@ -6,25 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
-public record FilterOrdersCommand(
+public record FilterSaleOrdersCommand(
     long? Id,
     decimal? Cost,
     DateTime? OrderDate) : IRequest<List<SaleOrderDto>>;
 
-internal sealed class FilterOrdersHandler
-    : IRequestHandler<FilterOrdersCommand, List<SaleOrderDto>>
+internal sealed class FilterSaleOrdersHandler
+    : IRequestHandler<FilterSaleOrdersCommand, List<SaleOrderDto>>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
 
-    public FilterOrdersHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
+    public FilterSaleOrdersHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
     }
 
     public async Task<List<SaleOrderDto>> Handle(
-        FilterOrdersCommand request,
+        FilterSaleOrdersCommand request,
         CancellationToken cancellationToken
     )
     {
@@ -49,6 +49,8 @@ internal sealed class FilterOrdersHandler
             Id = x.Id,
             Cost = x.Cost,
             OrderDate = x.OrderDate,
+            LocationId = x.LocationId,
+            LocationName = x.LocationName,
         }).ToList();
     }
 }

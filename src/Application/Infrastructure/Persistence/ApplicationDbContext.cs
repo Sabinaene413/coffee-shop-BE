@@ -12,22 +12,26 @@ using MyCoffeeShop.Application.Inventories;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.SaleProducts;
 using MyCoffeeShop.Application.SaleOrders;
+using MyCoffeeShop.Application.CoffeeShops;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 
 namespace MyCoffeeShop.Application.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext
 {
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IHttpContextAccesorService _contextAccesorService;
     private readonly IDateTime _dateTime;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        ICurrentUserService currentUserService,
+        IHttpContextAccesorService contextAccesorService,
         IDateTime dateTime) : base(options)
     {
-        _currentUserService = currentUserService;
+        _contextAccesorService = contextAccesorService;
         _dateTime = dateTime;
     }
+    public DbSet<CoffeeShop> CoffeeShops => Set<CoffeeShop>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
@@ -47,11 +51,11 @@ public class ApplicationDbContext : DbContext
             switch (entry.State)
             {
                 case EntityState.Added:
-                    entry.Entity.CreatedBy = _currentUserService.UserId;
+                    entry.Entity.CreatedBy = _contextAccesorService.UserId;
                     entry.Entity.CreatedAt = _dateTime.Now;
                     break;
                 case EntityState.Modified:
-                    entry.Entity.UpdatedBy = _currentUserService.UserId;
+                    entry.Entity.UpdatedBy = _contextAccesorService.UserId;
                     entry.Entity.UpdatedAt = _dateTime.Now;
                     break;
                 case EntityState.Detached:
@@ -65,6 +69,28 @@ public class ApplicationDbContext : DbContext
             }
         }
 
+        foreach (var entry in ChangeTracker.Entries<BaseLocationEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.LocationId = _contextAccesorService.LocationId;
+                    entry.Entity.LocationName = _contextAccesorService.LocationName;
+                    break;
+                case EntityState.Modified:
+                    entry.Entity.LocationId = _contextAccesorService.LocationId;
+                    entry.Entity.LocationName = _contextAccesorService.LocationName;
+                    break;
+                case EntityState.Detached:
+                    break;
+                case EntityState.Unchanged:
+                    break;
+                case EntityState.Deleted:
+                    break;
+                default:
+                    break;
+            }
+        }
 
         var result = await base.SaveChangesAsync(cancellationToken);
 
@@ -73,6 +99,17 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        if(_contextAccesorService.LocationId != null)
+        {
+            builder.Entity<Employee>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<Inventory>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<SaleOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<ShopOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<ShopProductOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<ShopProduct>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<SaleProduct>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+        }
+
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);

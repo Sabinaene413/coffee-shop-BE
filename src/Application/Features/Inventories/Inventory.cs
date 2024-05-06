@@ -4,7 +4,7 @@ using MyCoffeeShop.Application.ShopProducts;
 
 namespace MyCoffeeShop.Application.Inventories;
 
-public class Inventory : BaseEntity
+public class Inventory : BaseLocationEntity
 {
     public Inventory()
     {
@@ -24,5 +24,7 @@ public class InventoryDto : IMapFrom<Inventory>
     public long Quantity { get; set; }
     public string Description { get; set; }
     public long? MinimumLevel { get; set; }
+    public long? LocationId { get; set; }
+    public string? LocationName { get; set; }
 
 }

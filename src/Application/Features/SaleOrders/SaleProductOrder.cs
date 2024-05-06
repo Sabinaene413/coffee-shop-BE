@@ -4,7 +4,7 @@ using MyCoffeeShop.Application.SaleProducts;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
-public class SaleProductOrder : BaseEntity
+public class SaleProductOrder : BaseLocationEntity
 {
     public SaleProductOrder()
     {

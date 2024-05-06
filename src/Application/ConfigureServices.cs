@@ -46,7 +46,7 @@ public static class DependencyInjection
         }
 
         services.AddTransient<IDateTime, DateTimeService>();
-        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        services.AddSingleton<IHttpContextAccesorService, HttpContextAccesorService>();
         services.AddScoped<TokenService>();
 
         return services;

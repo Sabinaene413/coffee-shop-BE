@@ -10,7 +10,7 @@ namespace MyCoffeeShop.Application.CoffeeShops
         [HttpPost("Create")]
         [ProducesResponseType(typeof(CoffeeShopDto), 200)] // Specifies the response type for successful creation
         public async Task<ActionResult<CoffeeShopDto>> Create(
-                [FromForm] CreateCoffeeShopCommand command, // Request body parameter
+                [FromBody] CreateCoffeeShopCommand command, // Request body parameter
                 CancellationToken cancellationToken // Cancellation token for async operation
             )
         {

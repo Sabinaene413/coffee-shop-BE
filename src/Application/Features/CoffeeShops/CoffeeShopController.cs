@@ -1,6 +1,6 @@
 ﻿using MyCoffeeShop.Application.Common.Abstracts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyCoffeeShop.Application.CoffeeShops
 {
@@ -41,6 +41,7 @@ namespace MyCoffeeShop.Application.CoffeeShops
         }
 
         // API endpoint for filtering CoffeeShops
+        [AllowAnonymous]
         [HttpPost("Filter")]
         [ProducesResponseType(typeof(List<CoffeeShop>), 200)] // Specifies the response type for successful filtering
         public async Task<ActionResult<List<CoffeeShop>>> Filter(

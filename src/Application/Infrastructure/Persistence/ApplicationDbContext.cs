@@ -13,8 +13,7 @@ using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.SaleProducts;
 using MyCoffeeShop.Application.SaleOrders;
 using MyCoffeeShop.Application.CoffeeShops;
-using System.Reflection.Emit;
-using System.Reflection.Metadata;
+using MyCoffeeShop.Application.EmployeePayments;
 
 namespace MyCoffeeShop.Application.Infrastructure.Persistence;
 
@@ -34,6 +33,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<CoffeeShop> CoffeeShops => Set<CoffeeShop>();
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
+    public DbSet<EmployeePayment> EmployeePayments => Set<EmployeePayment>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<SaleOrder> SaleOrders => Set<SaleOrder>();

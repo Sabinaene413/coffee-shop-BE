@@ -5,6 +5,8 @@ using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
 using MyCoffeeShop.Application.Inventories;
+using MyCoffeeShop.Application.Transactions;
+using MyCoffeeShop.Application.TransactionTypes;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
@@ -79,6 +81,21 @@ internal sealed class UpdateOrderCommandHandler
                 ShopProductId = y.ShopProductId,
             }).ToList();
             await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
+
+            var newTransaction = new Transaction()
+            {
+                ShopOrderId = entity.Id,
+                TotalAmount = entity.Cost,
+                TransactionDate = entity.OrderDate,
+                TransactionTypeId = (long)TransactionTypeEnum.OUT,
+                TransactionDetails = entity.ShopOrderProducts.Select(x => new TransactionDetail()
+                {
+                    ShopProductId = x.ShopProductId,
+                    Quantity = x.Quantity,
+                    Amount = x.Cost,
+                }).ToList()
+            };
+            await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
         }
 

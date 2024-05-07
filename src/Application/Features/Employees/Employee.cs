@@ -1,5 +1,6 @@
 ﻿using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Mappings;
+using MyCoffeeShop.Application.EmployeePayments;
 
 namespace MyCoffeeShop.Application.Employees;
 
@@ -15,6 +16,7 @@ public class Employee : BaseLocationEntity
     public decimal? SalaryNet { get; set; }
     public decimal? SalaryBrut { get; set; }
     public decimal? Taxes { get; set; }
+    public virtual List<EmployeePayment> EmployeePayments { get; set; }
 
 }
 

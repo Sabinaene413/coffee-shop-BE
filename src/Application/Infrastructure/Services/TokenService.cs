@@ -33,7 +33,7 @@ public class TokenService
 #pragma warning restore CS8601 // Possible null reference assignment.
     }
 
-    public string CreateToken(User user, CoffeeShopDto coffeeShop = null)
+    public string CreateToken(User user, CoffeeShopDto? coffeeShop = null)
     {
 
         var expiration = DateTime.UtcNow.AddMinutes(_tokenConfigurations.ExpirationMinutes);

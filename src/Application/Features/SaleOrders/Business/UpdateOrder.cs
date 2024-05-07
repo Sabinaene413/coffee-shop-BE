@@ -43,6 +43,8 @@ internal sealed class UpdateOrderCommandHandler
         CancellationToken cancellationToken
     )
     {
+
+        throw new Exception("Not implemented yet, check create order for transcation logic.");
         var entity = await _applicationDbContext.SaleOrders.Include(x => x.SaleOrderProducts)
                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
                ?? throw new NotFoundException(nameof(SaleOrder), request.Id);

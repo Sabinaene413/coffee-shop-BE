@@ -3,6 +3,8 @@ using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using MyCoffeeShop.Application.Inventories;
+using MyCoffeeShop.Application.Transactions;
+using MyCoffeeShop.Application.TransactionTypes;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
@@ -60,7 +62,7 @@ internal sealed class CreateOrderCommandHandler
             }).ToList()
         };
 
-        
+
         await _applicationDbContext.ShopOrders.AddAsync(entity, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
@@ -74,8 +76,23 @@ internal sealed class CreateOrderCommandHandler
                 ShopProductId = y.ShopProductId,
             }).ToList();
             await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
+
+            var newTransaction = new Transaction()
+            {
+                ShopOrderId = entity.Id,
+                TotalAmount = entity.Cost,
+                TransactionDate = entity.OrderDate,
+                TransactionTypeId = (long)TransactionTypeEnum.OUT,
+                TransactionDetails = entity.ShopOrderProducts.Select(x => new TransactionDetail()
+                {
+                    ShopProductId = x.ShopProductId,
+                    Quantity = x.Quantity,
+                    Amount = x.Cost,
+                }).ToList()
+            };
+            await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
         }
-        await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<ShopOrderDto>(entity);
     }

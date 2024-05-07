@@ -2,6 +2,8 @@
 using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
+using MyCoffeeShop.Application.Transactions;
+using MyCoffeeShop.Application.TransactionTypes;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
@@ -55,6 +57,20 @@ internal sealed class CreateOrderCommandHandler
         await _applicationDbContext.SaleOrders.AddAsync(entity, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
+        var newTransaction = new Transaction()
+        {
+            SaleOrderId = entity.Id,
+            TotalAmount = entity.Cost,
+            TransactionDate = entity.OrderDate,
+            TransactionTypeId = (long)TransactionTypeEnum.IN,
+            TransactionDetails = entity.SaleOrderProducts.Select(x => new TransactionDetail()
+            {
+                SaleProductId = x.SaleProductId,
+                Quantity = x.Quantity,
+                Amount = x.Cost,
+            }).ToList()
+        };
+        await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<SaleOrderDto>(entity);

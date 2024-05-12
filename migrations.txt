@@ -2,7 +2,7 @@ dotnet tool install --global dotnet-ef
 
 
 ```````````Add Migration to project```````````
-dotnet ef migrations add AddedTransactionsInOutAndEmployeePayments --project src/Application --startup-project src/Api --output-dir Infrastructure/Persistence/Migrations
+dotnet ef migrations add AddLocationIdToEmployeeAddRegister --project src/Application --startup-project src/Api --output-dir Infrastructure/Persistence/Migrations
 
 ```````````Apply Migration to project```````````
 dotnet ef database update --project src/Application --startup-project src/Api   

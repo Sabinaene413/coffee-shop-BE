@@ -13,6 +13,7 @@ public class FilterUsersCommand : IRequest<List<UserDto>>
     public string? LastName { get; set; }
     public string? Email { get; set; }
     public string? UserName { get; set; }
+    public long? LocationId { get; set; }
     public int PageNumber { get; set; } 
     public int PageSize { get; set; } 
 
@@ -80,6 +81,9 @@ internal sealed class FilterUsersHandler : IRequestHandler<FilterUsersCommand, L
 
         if (!string.IsNullOrWhiteSpace(request.UserName))
             query = query.Where(u => !string.IsNullOrWhiteSpace(u.UserName) && u.UserName.Contains(request.UserName));
+
+        if (request.LocationId.HasValue)
+            query = query.Where(u => u.LocationId == request.LocationId.Value);
 
 
         // Paging

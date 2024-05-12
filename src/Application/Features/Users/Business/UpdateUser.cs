@@ -16,6 +16,7 @@ public class UpdateUserCommand : IRequest<UserDto>
     public string? UserName { get; set; }
     public string? Password { get; set; }
     public string? Email { get; set; }
+    public long? LocationId { get; set; }
 }
 
 public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
@@ -89,6 +90,7 @@ internal sealed class UpdateUserCommandHandler : IRequestHandler<UpdateUserComma
             user.LastName = request.LastName;
             user.Email = request.Email;
             user.UserName = request.UserName;
+            user.LocationId= request.LocationId;
 
             await _context.SaveChangesAsync(cancellationToken);
             return _mapper.Map<UserDto>(user);

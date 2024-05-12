@@ -108,6 +108,7 @@ public class ApplicationDbContext : DbContext
             builder.Entity<ShopProductOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<ShopProduct>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<SaleProduct>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<User>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
         }
 
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

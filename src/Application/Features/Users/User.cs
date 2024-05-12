@@ -15,6 +15,7 @@ public class User : BaseEntity
     public string? Email { get; set; }
     public UserRole Role { get; set; }
     public long UserCredentialId { get; set; }
+    public long? LocationId { get; set; }
 
 }
 
@@ -32,4 +33,5 @@ public class UserDto : IMapFrom<User>
     public string? UserName { get; set; }
     public string? Email { get; set; }
     public UserRole Role { get; set; }
+    public long? LocationId { get; set; }
 }

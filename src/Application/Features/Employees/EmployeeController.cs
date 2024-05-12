@@ -31,8 +31,8 @@ namespace MyCoffeeShop.Application.Employees
 
         // API endpoint for getting a Employee by ID
         [HttpPost("GetById")]
-        [ProducesResponseType(typeof((EmployeeDto, IFormFile)), 200)] // Specifies the response type for successful retrieval
-        public async Task<ActionResult<(EmployeeDto, IFormFile)>> GetById(
+        [ProducesResponseType(typeof(EmployeeWithPhoto), 200)] // Specifies the response type for successful retrieval
+        public async Task<ActionResult<EmployeeWithPhoto>> GetById(
             [FromBody] GetEmployeeByIdCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
@@ -43,7 +43,7 @@ namespace MyCoffeeShop.Application.Employees
         // API endpoint for filtering Employees
         [HttpPost("Filter")]
         [ProducesResponseType(typeof(List<Employee>), 200)] // Specifies the response type for successful filtering
-        public async Task<ActionResult<List<Employee>>> Filter(
+        public async Task<ActionResult<List<EmployeeWithPhoto>>> Filter(
             [FromBody] FilterEmployeesCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )

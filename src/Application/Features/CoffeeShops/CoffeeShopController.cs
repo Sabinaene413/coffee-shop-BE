@@ -7,6 +7,7 @@ namespace MyCoffeeShop.Application.CoffeeShops
     public class CoffeeShopController : ApiControllerBase
     {
         // API endpoint for creating a new CoffeeShop
+        [AllowAnonymous]
         [HttpPost("Create")]
         [ProducesResponseType(typeof(CoffeeShopDto), 200)] // Specifies the response type for successful creation
         public async Task<ActionResult<CoffeeShopDto>> Create(

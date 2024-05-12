@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using AutoMapper;
 using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace MyCoffeeShop.Application.Employees;
 
@@ -12,21 +12,19 @@ public record FilterEmployeesCommand(
     string? LastName,
     decimal? Taxes,
     decimal? SalaryBrut,
-    decimal? SalaryNet) : IRequest<List<EmployeeDto>>;
+    decimal? SalaryNet) : IRequest<List<EmployeeWithPhoto>>;
 
 internal sealed class FilterEmployeesHandler
-    : IRequestHandler<FilterEmployeesCommand, List<EmployeeDto>>
+    : IRequestHandler<FilterEmployeesCommand, List<EmployeeWithPhoto>>
 {
     private readonly ApplicationDbContext _applicationDbContext;
-    private readonly IMapper _mapper;
 
-    public FilterEmployeesHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
+    public FilterEmployeesHandler(ApplicationDbContext applicationDbContext)
     {
         _applicationDbContext = applicationDbContext;
-        _mapper = mapper;
     }
 
-    public async Task<List<EmployeeDto>> Handle(
+    public async Task<List<EmployeeWithPhoto>> Handle(
         FilterEmployeesCommand request,
         CancellationToken cancellationToken
     )
@@ -54,7 +52,49 @@ internal sealed class FilterEmployeesHandler
             query = query.Where(u => u.SalaryNet == request.SalaryNet.Value);
 
 
-        var entities = await query.ToListAsync(cancellationToken);
-        return _mapper.Map<List<EmployeeDto>>(entities);
+        var entities = new List<EmployeeWithPhoto>();
+        foreach (var entity in await query.ToListAsync(cancellationToken))
+        {
+            var file = CreateIFormFile(entity.FilePath);
+            var employeeWithPhoto = new EmployeeWithPhoto
+            {
+                Id = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                FilePath = entity.FilePath,
+                SalaryNet = entity.SalaryNet,
+                SalaryBrut = entity.SalaryBrut,
+                Taxes = entity.Taxes,
+                LocationId = entity.LocationId,
+                LocationName = entity.LocationName,
+                ProfilePhoto = file
+            };
+            entities.Add(employeeWithPhoto);
+        }
+        return entities;
+    }
+
+    public IFormFile CreateIFormFile(string filePath)
+    {
+        // Check if file exists
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("File not found", filePath);
+        }
+
+        // Get the file name
+        var fileName = Path.GetFileName(filePath);
+
+        // Open the file stream
+        var fileStream = new FileStream(filePath, FileMode.Open);
+
+        // Create an IFormFile object
+        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, fileName)
+        {
+            Headers = new HeaderDictionary(),
+            ContentType = "application/octet-stream" // Set the content type appropriately
+        };
+
+        return formFile;
     }
 }

@@ -7,6 +7,17 @@ namespace MyCoffeeShop.Application.Users
 {
     public class UserController : ApiControllerBase
     {
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        [ProducesResponseType(typeof(UserDto), 200)] // Specifies the response type for successful creation
+        public async Task<ActionResult<UserDto>> Register(
+            [FromBody] RegisterUserCommand command, // Request body parameter
+            CancellationToken cancellationToken // Cancellation token for async operation
+        )
+        {
+            return await Mediator.Send(command, cancellationToken); // Executes the command and returns the result
+        }
+
         // API endpoint for creating a new user
         [HttpPost("Create")]
         [ProducesResponseType(typeof(UserDto), 200)] // Specifies the response type for successful creation

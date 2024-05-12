@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using AutoMapper;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
@@ -7,20 +6,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace MyCoffeeShop.Application.Employees;
 
-public record GetEmployeeByIdCommand(long Id) : IRequest<(EmployeeDto, IFormFile)>;
+public record GetEmployeeByIdCommand(long Id) : IRequest<EmployeeWithPhoto>;
 
-internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, (EmployeeDto, IFormFile)>
+internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, EmployeeWithPhoto>
 {
     private readonly ApplicationDbContext _applicationDbContext;
-    private readonly IMapper _mapper;
 
-    public GetByIdHandler(ApplicationDbContext applicationDbContext, IMapper mapper)
+    public GetByIdHandler(ApplicationDbContext applicationDbContext)
     {
         _applicationDbContext = applicationDbContext;
-        _mapper = mapper;
     }
 
-    public async Task<(EmployeeDto, IFormFile)> Handle(
+    public async Task<EmployeeWithPhoto> Handle(
         GetEmployeeByIdCommand request,
         CancellationToken cancellationToken
     )
@@ -29,9 +26,21 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, (
             ?? throw new NotFoundException(nameof(Employee), request.Id);
 
         var file = CreateIFormFile(entity.FilePath);
-        var employeeDto = _mapper.Map<EmployeeDto>(entity);
+        var employeeWithPhoto = new EmployeeWithPhoto
+        {
+            Id = entity.Id,
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            FilePath = entity.FilePath,
+            SalaryNet = entity.SalaryNet,
+            SalaryBrut = entity.SalaryBrut,
+            Taxes = entity.Taxes,
+            LocationId = entity.LocationId,
+            LocationName = entity.LocationName,
+            ProfilePhoto = file
+        };
 
-        return (employeeDto, file);
+        return employeeWithPhoto;
     }
 
     public IFormFile CreateIFormFile(string filePath)

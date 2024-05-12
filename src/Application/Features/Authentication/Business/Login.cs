@@ -11,7 +11,7 @@ using MyCoffeeShop.Application.CoffeeShops;
 
 namespace MyCoffeeShop.Application.Features.Authentications.Business;
 
-public record LoginCommand(string Email, string Password, long? LocationId) : IRequest<LoginResponse>;
+public record LoginCommand(string Email, string Password) : IRequest<LoginResponse>;
 
 public class LoginResponse
 {
@@ -89,8 +89,8 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
                             .FirstOrDefaultAsync(x => string.Compare(x.Email, request.Email) == 0, cancellationToken) ??
                 throw new NotFoundException(nameof(User), request.Email);
 
-            var locationDto = request.LocationId.HasValue ? _mapper.Map<CoffeeShopDto>(await _applicationDbContext.CoffeeShops.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == request.LocationId, cancellationToken)) : null;
+            var locationDto = user.LocationId.HasValue ? _mapper.Map<CoffeeShopDto>(await _applicationDbContext.CoffeeShops.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == user.LocationId, cancellationToken)) : null;
 
             var accessToken = _tokenService.CreateToken(user, locationDto);
             var refreshToken = _tokenService.GenerateRefreshToken();

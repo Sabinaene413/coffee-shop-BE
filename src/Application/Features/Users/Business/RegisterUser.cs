@@ -2,24 +2,24 @@
 using MediatR;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using AutoMapper;
-using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Constants;
+using MyCoffeeShop.Application.CoffeeShops;
 namespace MyCoffeeShop.Application.Users;
 
-public record CreateUserCommand(
+public record RegisterUserCommand(
     string FirstName,
     string LastName,
     string Password,
     string Email,
     string UserName,
-    long? LocationId,
-    bool IsAdmin) : IRequest<UserDto>;
+    string LocationName,
+    bool IsAdmin = true) : IRequest<UserDto>;
 
-public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
     private readonly ApplicationDbContext _applicationDbContext;
 
-    public CreateUserCommandValidator(ApplicationDbContext applicationDbContext)
+    public RegisterUserCommandValidator(ApplicationDbContext applicationDbContext)
     {
         _applicationDbContext = applicationDbContext;
 
@@ -47,19 +47,19 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     }
 }
 
-internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserDto>
+internal sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, UserDto>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public CreateUserCommandHandler(ApplicationDbContext context,
+    public RegisterUserCommandHandler(ApplicationDbContext context,
         IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<UserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         string? passwordSalt = null;
         string? passwordHash = null;
@@ -73,7 +73,14 @@ internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserComma
             PasswordSalt = passwordSalt,
         };
 
+        var coffeeShop = new CoffeeShop()
+        {
+            Name = request.LocationName
+        };
+
+        _context.CoffeeShops.Add(coffeeShop);
         _context.UserCredentials.Add(userCredentials);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         var entity = new User
@@ -84,7 +91,7 @@ internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserComma
             Email = request.Email,
             Role = !request.IsAdmin ? UserRole.User : UserRole.Admin,
             UserCredentialId = userCredentials.Id,
-            LocationId = request.LocationId
+            LocationId = coffeeShop.Id
         };
 
         _context.Users.Add(entity);

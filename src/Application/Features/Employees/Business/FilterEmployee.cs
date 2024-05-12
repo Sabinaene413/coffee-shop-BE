@@ -78,9 +78,7 @@ internal sealed class FilterEmployeesHandler
     {
         // Check if file exists
         if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("File not found", filePath);
-        }
+            return null;
 
         // Get the file name
         var fileName = Path.GetFileName(filePath);

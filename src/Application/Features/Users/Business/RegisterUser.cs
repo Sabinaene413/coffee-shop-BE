@@ -11,7 +11,6 @@ public record RegisterUserCommand(
     string LastName,
     string Password,
     string Email,
-    string UserName,
     string LocationName,
     bool IsAdmin = true) : IRequest<UserDto>;
 
@@ -87,7 +86,6 @@ internal sealed class RegisterUserCommandHandler : IRequestHandler<RegisterUserC
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
-            UserName = request.UserName,
             Email = request.Email,
             Role = !request.IsAdmin ? UserRole.User : UserRole.Admin,
             UserCredentialId = userCredentials.Id,

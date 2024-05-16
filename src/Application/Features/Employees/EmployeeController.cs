@@ -55,7 +55,7 @@ namespace MyCoffeeShop.Application.Employees
         [HttpPut("Update")]
         [ProducesResponseType(typeof(EmployeeDto), 200)] // Specifies the response type for successful update
         public async Task<ActionResult> Update(
-            [FromBody] UpdateEmployeeCommand command, // Request body parameter
+            [FromForm] UpdateEmployeeCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )
         {

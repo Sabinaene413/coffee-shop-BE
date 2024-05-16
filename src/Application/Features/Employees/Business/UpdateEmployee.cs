@@ -54,8 +54,12 @@ internal sealed class UpdateEmployeeCommandHandler
         {
             string filename = request.File.FileName;
             filename = Path.GetFileName(filename);
-            uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files", filename);
-            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            uploadfilepath = Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati", filename);
+            // Check if the directory exists, if not, create it
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati")))
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati"));
+
+            using var stream = new FileStream(uploadfilepath, FileMode.Create);
             await request.File.CopyToAsync(stream, cancellationToken);
         }
         entity.FilePath = uploadfilepath;

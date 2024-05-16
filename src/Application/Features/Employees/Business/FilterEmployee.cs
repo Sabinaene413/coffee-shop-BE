@@ -55,7 +55,7 @@ internal sealed class FilterEmployeesHandler
         var entities = new List<EmployeeWithPhoto>();
         foreach (var entity in await query.ToListAsync(cancellationToken))
         {
-            var file = CreateIFormFile(entity.FilePath);
+            var photoData = GetFileData(entity.FilePath);
             var employeeWithPhoto = new EmployeeWithPhoto
             {
                 Id = entity.Id,
@@ -67,32 +67,22 @@ internal sealed class FilterEmployeesHandler
                 Taxes = entity.Taxes,
                 LocationId = entity.LocationId,
                 LocationName = entity.LocationName,
-                ProfilePhoto = file
+                ProfilePhoto = photoData.Item1,  // Assign photo data
+                ProfilePhotoContentType = photoData.Item2 // Assign content type
             };
             entities.Add(employeeWithPhoto);
         }
         return entities;
     }
 
-    public IFormFile CreateIFormFile(string filePath)
+    private (byte[], string) GetFileData(string filePath)
     {
-        // Check if file exists
         if (!File.Exists(filePath))
-            return null;
+            return (null, null);
 
-        // Get the file name
-        var fileName = Path.GetFileName(filePath);
+        var content = File.ReadAllBytes(filePath);
+        var contentType = "application/octet-stream"; // Default content type, change if necessary
 
-        // Open the file stream
-        var fileStream = new FileStream(filePath, FileMode.Open);
-
-        // Create an IFormFile object
-        var formFile = new FormFile(fileStream, 0, fileStream.Length, null, fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = "application/octet-stream" // Set the content type appropriately
-        };
-
-        return formFile;
+        return (content, contentType);
     }
 }

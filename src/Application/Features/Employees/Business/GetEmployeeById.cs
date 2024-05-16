@@ -25,7 +25,7 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, E
         var entity = await _applicationDbContext.Employees.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw new NotFoundException(nameof(Employee), request.Id);
 
-        var file = CreateIFormFile(entity.FilePath);
+        var photoData = GetFileData(entity.FilePath);
         var employeeWithPhoto = new EmployeeWithPhoto
         {
             Id = entity.Id,
@@ -37,7 +37,8 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, E
             Taxes = entity.Taxes,
             LocationId = entity.LocationId,
             LocationName = entity.LocationName,
-            ProfilePhoto = file
+            ProfilePhoto = photoData.Item1,  // Assign photo data
+            ProfilePhotoContentType = photoData.Item2 // Assign content type
         };
 
         return employeeWithPhoto;
@@ -55,7 +56,7 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, E
         var fileName = Path.GetFileName(filePath);
 
         // Open the file stream
-        var fileStream = new FileStream(filePath, FileMode.Open);
+        using var fileStream = new FileStream(filePath, FileMode.Open);
 
         // Create an IFormFile object
         var formFile = new FormFile(fileStream, 0, fileStream.Length, null, fileName)
@@ -65,5 +66,16 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, E
         };
 
         return formFile;
+    }
+
+    private (byte[], string) GetFileData(string filePath)
+    {
+        if (!File.Exists(filePath))
+            return (null, null);
+
+        var content = File.ReadAllBytes(filePath);
+        var contentType = "application/octet-stream"; // Default content type, change if necessary
+
+        return (content, contentType);
     }
 }

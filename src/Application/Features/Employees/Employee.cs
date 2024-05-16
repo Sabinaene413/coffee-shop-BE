@@ -46,5 +46,6 @@ public class EmployeeWithPhoto
     public decimal? Taxes { get; set; }
     public long? LocationId { get; set; }
     public string? LocationName { get; set; }
-    public IFormFile? ProfilePhoto { get; set; }
+    public byte[] ProfilePhoto { get; set; }  // Updated to store file content
+    public string ProfilePhotoContentType { get; set; }  // Store content type
 }

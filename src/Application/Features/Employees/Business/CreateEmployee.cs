@@ -53,7 +53,7 @@ internal sealed class CreateEmployeeCommandHandler
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati")))
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "SpatiuFisiere\\Angajati"));
 
-            var stream = new FileStream(uploadfilepath, FileMode.Create);
+            using var stream = new FileStream(uploadfilepath, FileMode.Create);
             await request.File.CopyToAsync(stream, cancellationToken);
         }
 

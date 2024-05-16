@@ -13,10 +13,10 @@ public record FilterOrdersCommand(
     decimal? Cost,
     DateTime? OrderDate,
     DateTime? ArrivalDate,
-    bool? Received) : IRequest<List<ShopOrderDto>>;
+    bool? Received) : IRequest<List<ShopOrderFilterResponse>>;
 
 internal sealed class FilterOrdersHandler
-    : IRequestHandler<FilterOrdersCommand, List<ShopOrderDto>>
+    : IRequestHandler<FilterOrdersCommand, List<ShopOrderFilterResponse>>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
@@ -27,12 +27,14 @@ internal sealed class FilterOrdersHandler
         _mapper = mapper;
     }
 
-    public async Task<List<ShopOrderDto>> Handle(
+    public async Task<List<ShopOrderFilterResponse>> Handle(
         FilterOrdersCommand request,
         CancellationToken cancellationToken
     )
     {
-        var query = _applicationDbContext.ShopOrders.AsQueryable();
+        var query = _applicationDbContext.ShopOrders
+                                    .Include(x => x.ShopOrderProducts)
+                                    .ThenInclude(x => x.ShopProduct).AsQueryable();
 
         // Apply filters
         if (request.Id.HasValue)
@@ -55,7 +57,7 @@ internal sealed class FilterOrdersHandler
 
 
         var entities = await query.ToListAsync(cancellationToken);
-        return entities.Select(x => new ShopOrderDto()
+        return entities.Select(x => new ShopOrderFilterResponse()
         {
             Id = x.Id,
             ArrivalDate = x.ArrivalDate,
@@ -65,6 +67,17 @@ internal sealed class FilterOrdersHandler
             Supplier = x.Supplier,
             LocationId = x.LocationId,
             LocationName = x.LocationName,
+            ShopOrderProducts = x.ShopOrderProducts.Select(y => new ShopProductOrderDto()
+            {
+                Id = y.Id,
+                ShopOrderId = y.ShopOrderId,
+                Price = y.Price,
+                Quantity = y.Quantity,
+                ShopProductId = y.ShopProductId,
+                Cost = y.Cost
+            }).ToList(),
+            Products = string.Join(", ", x.ShopOrderProducts.Select(y => y.ShopProduct.Name)) + "..."
+            
         }).ToList();
     }
 }

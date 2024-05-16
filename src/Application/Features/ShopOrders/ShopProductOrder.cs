@@ -13,6 +13,7 @@ public class ShopProductOrder : BaseLocationEntity
     public long ShopProductId { get; set; }
     public long ShopOrderId { get; set; }
     public int Quantity { get; set; }
+    public decimal Price { get; set; }
     public decimal Cost { get; set; }
     public virtual ShopProduct ShopProduct { get; set; }
     public virtual ShopOrder ShopOrder { get; set; }
@@ -20,9 +21,10 @@ public class ShopProductOrder : BaseLocationEntity
 
 public class ShopProductOrderDto : IMapFrom<ShopProductOrder>
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
     public long ShopProductId { get; set; }
-    public long ShopOrderId { get; set; }
+    public long? ShopOrderId { get; set; }
     public int Quantity { get; set; }
+    public decimal Price { get; set; }
     public decimal Cost { get; set; }
 }

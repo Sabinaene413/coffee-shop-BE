@@ -22,8 +22,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     public CreateOrderCommandValidator()
     {
         RuleFor(v => v.Supplier).NotEmpty();
-        RuleFor(v => v.Cost).NotEmpty();
-        RuleFor(v => v.ShopOrderProducts).NotEmpty();
     }
 }
 
@@ -54,12 +52,13 @@ internal sealed class CreateOrderCommandHandler
             OrderDate = request.OrderDate,
             ArrivalDate = request.ArrivalDate,
             Received = request.Received,
-            ShopOrderProducts = request.ShopOrderProducts.Select(x => new ShopProductOrder()
+            ShopOrderProducts = request.ShopOrderProducts?.Select(x => new ShopProductOrder()
             {
                 ShopProductId = x.ShopProductId,
                 Quantity = x.Quantity,
+                Price = x.Price,
                 Cost = x.Cost,
-            }).ToList()
+            }).ToList() ?? new List<ShopProductOrder> { }
         };
 
 

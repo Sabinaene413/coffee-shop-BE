@@ -25,7 +25,6 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
     public UpdateOrderCommandValidator()
     {
         RuleFor(v => v.Supplier).NotEmpty();
-        RuleFor(v => v.Cost).NotEmpty();
     }
 }
 
@@ -54,12 +53,19 @@ internal sealed class UpdateOrderCommandHandler
                ?? throw new NotFoundException(nameof(ShopOrder), request.Id);
 
         var oldReceived = entity.Received;
-        entity.ShopOrderProducts = request.ShopOrderProducts.Select(x => new ShopProductOrder()
+
+        var deletedProducts = entity.ShopOrderProducts.Where(x => !(request.ShopOrderProducts.Where(y => y.Id.HasValue)?.Select(y => y.Id).ToList() ?? new List<long?>()).Contains(x.Id)).ToList();
+        _applicationDbContext.ShopProductOrders.RemoveRange(deletedProducts);
+
+        var newProducts = request.ShopOrderProducts.Where(x => x.Id.HasValue)?.Select(x => new ShopProductOrder()
         {
             ShopProductId = x.ShopProductId,
             Quantity = x.Quantity,
+            Price = x.Price,
             Cost = x.Cost,
+            ShopOrder = entity
         }).ToList();
+        await _applicationDbContext.ShopProductOrders.AddRangeAsync(newProducts, cancellationToken);
 
         entity.Supplier = request.Supplier;
         entity.Cost = request.Cost;

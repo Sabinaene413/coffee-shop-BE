@@ -9,6 +9,7 @@ namespace MyCoffeeShop.Application.Common.Abstracts;
 [Authorize]
 [Route("api/[controller]")]
 [Produces("application/json")] // Specifies the response format for all actions in the controller
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public abstract class ApiControllerBase : ControllerBase
 {
     private ISender? _mediator;

@@ -63,6 +63,7 @@ namespace MyCoffeeShop.Application.Users
             return Ok(await Mediator.Send(command, cancellationToken)); // Returns the filtered list of users
         }
 
+        [AllowAnonymous]
         // API endpoint for updating a user
         [HttpPut("Update")]
         [ProducesResponseType(typeof(UserDto), 200)] // Specifies the response type for successful update

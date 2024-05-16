@@ -30,3 +30,8 @@ public class ShopOrderDto : IMapFrom<ShopOrder>
     public List<ShopProductOrderDto> ShopOrderProducts { get; set; }
 
 }
+
+public class ShopOrderFilterResponse: ShopOrderDto
+{
+    public string Products { get; set; }
+}

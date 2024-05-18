@@ -4,7 +4,8 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
-using MyCoffeeShop.Application.Inventories;
+using MyCoffeeShop.Application.Transactions;
+using MyCoffeeShop.Application.TransactionTypes;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
@@ -44,17 +45,20 @@ internal sealed class UpdateOrderCommandHandler
     )
     {
 
-        throw new Exception("Not implemented yet, check create order for transcation logic.");
         var entity = await _applicationDbContext.SaleOrders.Include(x => x.SaleOrderProducts)
-                                      .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
-               ?? throw new NotFoundException(nameof(SaleOrder), request.Id);
+                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
+                ?? throw new NotFoundException(nameof(SaleOrderDto), request.Id);
 
-        entity.SaleOrderProducts = request.SaleOrderProducts.Select(x => new SaleProductOrder()
+        var deletedProducts = entity.SaleOrderProducts.Where(x => !(request.SaleOrderProducts.Where(y => y.Id.HasValue)?.Select(y => y.Id).ToList() ?? new List<long?>()).Contains(x.Id)).ToList();
+        _applicationDbContext.SaleProductOrders.RemoveRange(deletedProducts);
+
+        var newProducts = request.SaleOrderProducts.Where(x => !x.Id.HasValue)?.Select(x => new SaleProductOrder()
         {
-            SaleProductId = x.SaleProductId,
             Quantity = x.Quantity,
+            Price = x.Price,
             Cost = x.Cost,
         }).ToList();
+        await _applicationDbContext.SaleProductOrders.AddRangeAsync(newProducts, cancellationToken);
 
         entity.Cost = request.Cost;
         entity.OrderDate = request.OrderDate;
@@ -62,7 +66,26 @@ internal sealed class UpdateOrderCommandHandler
         _applicationDbContext.SaleOrders.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
+        
+        var oldTransaction = await _applicationDbContext.Transactions.Include(x => x.TransactionDetails).FirstOrDefaultAsync(x => x.SaleOrderId == entity.Id, cancellationToken);
 
+        var newTransaction = new Transaction()
+        {
+            SaleOrderId = entity.Id,
+            TotalAmount = entity.Cost,
+            TransactionDate = entity.OrderDate,
+            TransactionTypeId = (long)TransactionTypeEnum.IN,
+            TransactionDetails = entity.SaleOrderProducts.Select(x => new TransactionDetail()
+            {
+                SaleProductId = x.SaleProductId,
+                Quantity = x.Quantity,
+                Amount = x.Cost,
+            }).ToList()
+        };
+
+         _applicationDbContext.Transactions.Remove(oldTransaction);
+        await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<SaleOrderDto>(entity);
     }

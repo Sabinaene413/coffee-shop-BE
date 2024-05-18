@@ -41,6 +41,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ShopProductOrder> ShopProductOrders => Set<ShopProductOrder>();
     public DbSet<ShopProduct> ShopProducts => Set<ShopProduct>();
     public DbSet<SaleProduct> SaleProducts => Set<SaleProduct>();
+    public DbSet<SaleProductOrder> SaleProductOrders => Set<SaleProductOrder>();
     public DbSet<UserCredential> UserCredentials => Set<UserCredential>();
     public DbSet<User> Users => Set<User>();
 

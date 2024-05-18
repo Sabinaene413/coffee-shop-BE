@@ -57,7 +57,7 @@ internal sealed class UpdateOrderCommandHandler
         var deletedProducts = entity.ShopOrderProducts.Where(x => !(request.ShopOrderProducts.Where(y => y.Id.HasValue)?.Select(y => y.Id).ToList() ?? new List<long?>()).Contains(x.Id)).ToList();
         _applicationDbContext.ShopProductOrders.RemoveRange(deletedProducts);
 
-        var newProducts = request.ShopOrderProducts.Where(x => x.Id.HasValue)?.Select(x => new ShopProductOrder()
+        var newProducts = request.ShopOrderProducts.Where(x => !x.Id.HasValue)?.Select(x => new ShopProductOrder()
         {
             ShopProductId = x.ShopProductId,
             Quantity = x.Quantity,

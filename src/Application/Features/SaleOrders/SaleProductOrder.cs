@@ -14,15 +14,17 @@ public class SaleProductOrder : BaseLocationEntity
     public long SaleOrderId { get; set; }
     public int Quantity { get; set; }
     public decimal Cost { get; set; }
+    public decimal Price { get; set; }
     public virtual SaleProduct SaleProduct { get; set; }
     public virtual SaleOrder SaleOrder { get; set; }
 }
 
 public class SaleProductOrderDto : IMapFrom<SaleProductOrder>
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
     public long SaleProductId { get; set; }
-    public long SaleOrderId { get; set; }
+    public long? SaleOrderId { get; set; }
     public int Quantity { get; set; }
     public decimal Cost { get; set; }
+    public decimal Price { get; set; }
 }

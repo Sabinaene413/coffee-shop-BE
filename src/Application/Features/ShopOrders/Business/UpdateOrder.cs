@@ -94,7 +94,7 @@ internal sealed class UpdateOrderCommandHandler
 
         var newTransaction = new Transaction()
         {
-            Description = $"Comanda magazin numarul {entity.Id} produse: " + string.Join(", ", entity.ShopOrderProducts.Select(x => x.ShopProduct.Name)),
+            Description = $"Comanda magazin numarul {entity.Id} produse: " + string.Join(", ", entity.ShopOrderProducts.Select(x => x.Quantity + "X " + x.ShopProduct.Name)),
             ShopOrderId = entity.Id,
             TotalAmount = entity.Cost,
             TransactionDate = entity.OrderDate,

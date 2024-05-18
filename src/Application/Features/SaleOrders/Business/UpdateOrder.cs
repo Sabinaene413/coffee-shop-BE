@@ -68,9 +68,11 @@ internal sealed class UpdateOrderCommandHandler
 
         
         var oldTransaction = await _applicationDbContext.Transactions.Include(x => x.TransactionDetails).FirstOrDefaultAsync(x => x.SaleOrderId == entity.Id, cancellationToken);
+        entity = await _applicationDbContext.SaleOrders.Include(x => x.SaleOrderProducts).ThenInclude(x=> x.SaleProduct).FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
 
         var newTransaction = new Transaction()
         {
+            Description = $"Comanda magazin numarul {entity.Id} produse: " + string.Join(", ", entity.SaleOrderProducts.Select(x => x.SaleProduct.Name)),
             SaleOrderId = entity.Id,
             TotalAmount = entity.Cost,
             TransactionDate = entity.OrderDate,

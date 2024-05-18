@@ -5,6 +5,7 @@ using MyCoffeeShop.Application.Infrastructure.Persistence;
 using MyCoffeeShop.Application.Inventories;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.TransactionTypes;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCoffeeShop.Application.ShopOrders;
 
@@ -76,22 +77,27 @@ internal sealed class CreateOrderCommandHandler
             }).ToList();
             await _applicationDbContext.Inventories.AddRangeAsync(newInventories, cancellationToken);
 
-            var newTransaction = new Transaction()
-            {
-                ShopOrderId = entity.Id,
-                TotalAmount = entity.Cost,
-                TransactionDate = entity.OrderDate,
-                TransactionTypeId = (long)TransactionTypeEnum.OUT,
-                TransactionDetails = entity.ShopOrderProducts.Select(x => new TransactionDetail()
-                {
-                    ShopProductId = x.ShopProductId,
-                    Quantity = x.Quantity,
-                    Amount = x.Cost,
-                }).ToList()
-            };
-            await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
-            await _applicationDbContext.SaveChangesAsync(cancellationToken);
         }
+
+        entity = await _applicationDbContext.ShopOrders.Include(x => x.ShopOrderProducts).ThenInclude(x=> x.ShopProduct).FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
+        var newTransaction = new Transaction()
+        {
+            Description = $"Comanda magazin numarul {entity.Id} produse: " + string.Join(", ", entity.ShopOrderProducts.Select(x => x.ShopProduct.Name)),
+            ShopOrderId = entity.Id,
+            TotalAmount = entity.Cost,
+            TransactionDate = entity.OrderDate,
+            TransactionTypeId = (long)TransactionTypeEnum.OUT,
+            TransactionDetails = entity.ShopOrderProducts.Select(x => new TransactionDetail()
+            {
+                ShopProductId = x.ShopProductId,
+                Quantity = x.Quantity,
+                Amount = x.Cost,
+            }).ToList()
+        };
+
+        await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
+        await _applicationDbContext.SaveChangesAsync(cancellationToken);
+
 
         return _mapper.Map<ShopOrderDto>(entity);
     }

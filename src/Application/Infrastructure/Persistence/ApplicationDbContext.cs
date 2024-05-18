@@ -36,6 +36,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<EmployeePayment> EmployeePayments => Set<EmployeePayment>();
     public DbSet<TransactionType> TransactionTypes => Set<TransactionType>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<TransactionDetail> TransactionDetails => Set<TransactionDetail>();
     public DbSet<SaleOrder> SaleOrders => Set<SaleOrder>();
     public DbSet<ShopOrder> ShopOrders => Set<ShopOrder>();
     public DbSet<ShopProductOrder> ShopProductOrders => Set<ShopProductOrder>();

@@ -10,6 +10,6 @@ public class TransactionDetailConfiguration : IEntityTypeConfiguration<Transacti
         builder.HasOne(x => x.Transaction)
             .WithMany(x => x.TransactionDetails)
             .HasForeignKey(x => x.TransactionId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

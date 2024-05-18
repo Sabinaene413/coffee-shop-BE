@@ -107,7 +107,6 @@ internal sealed class UpdateOrderCommandHandler
             }).ToList()
         };
 
-        _applicationDbContext.TransactionDetails.RemoveRange(oldTransaction.TransactionDetails);
         _applicationDbContext.Transactions.Remove(oldTransaction);
         await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

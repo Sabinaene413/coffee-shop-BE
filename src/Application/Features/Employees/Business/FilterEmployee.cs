@@ -64,6 +64,8 @@ internal sealed class FilterEmployeesHandler
                 FilePath = entity.FilePath,
                 SalaryNet = entity.SalaryNet,
                 SalaryBrut = entity.SalaryBrut,
+                EmployeeTypeId = entity.EmployeeTypeId,
+                UserId = entity.UserId,
                 Taxes = entity.Taxes,
                 LocationId = entity.LocationId,
                 LocationName = entity.LocationName,

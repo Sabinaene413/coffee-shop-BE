@@ -24,3 +24,9 @@ public class SaleOrderDto : IMapFrom<SaleOrder>
     public List<SaleProductOrderDto> SaleOrderProducts { get; set; }
 
 }
+
+
+public class SaleOrderFilterResponse : SaleOrderDto
+{
+    public string Products { get; set; }
+}

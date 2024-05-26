@@ -35,6 +35,7 @@ internal sealed class GetByIdHandler : IRequestHandler<GetEmployeeByIdCommand, E
             SalaryNet = entity.SalaryNet,
             SalaryBrut = entity.SalaryBrut,
             Taxes = entity.Taxes,
+            EmployeeTypeId = entity.EmployeeTypeId,
             LocationId = entity.LocationId,
             LocationName = entity.LocationName,
             ProfilePhoto = photoData.Item1,  // Assign photo data

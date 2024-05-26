@@ -15,7 +15,9 @@ public record UpdateEmployeeCommand(
     IFormFile? File,
     decimal? Taxes,
     decimal? SalaryBrut,
-    decimal? SalaryNet
+    decimal? SalaryNet,
+    long? EmployeeTypeId,
+    long? UserId
 ) : IRequest<EmployeeDto>;
 
 public class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>
@@ -68,6 +70,8 @@ internal sealed class UpdateEmployeeCommandHandler
         entity.Taxes = request.Taxes;
         entity.LastName = request.LastName;
         entity.FirstName = request.FirstName;
+        entity.EmployeeTypeId = request.EmployeeTypeId;
+        entity.UserId = request.UserId;
 
         _applicationDbContext.Employees.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

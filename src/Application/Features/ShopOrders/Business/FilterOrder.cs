@@ -76,8 +76,7 @@ internal sealed class FilterOrdersHandler
                 ShopProductId = y.ShopProductId,
                 Cost = y.Cost
             }).ToList(),
-            Products = string.Join(", ", x.ShopOrderProducts.Select(y => y.ShopProduct.Name)) + "..."
-            
+            Products = $"Produse: " + string.Join(", ", x.ShopOrderProducts.Select(x => x.Quantity + "X " + x.ShopProduct.Name)),
         }).ToList();
     }
 }

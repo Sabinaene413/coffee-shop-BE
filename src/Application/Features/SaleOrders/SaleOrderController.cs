@@ -42,8 +42,8 @@ namespace MyCoffeeShop.Application.SaleOrders
 
         // API endpoint for filtering SaleOrders
         [HttpPost("Filter")]
-        [ProducesResponseType(typeof(List<SaleOrder>), 200)] // Specifies the response type for successful filtering
-        public async Task<ActionResult<List<SaleOrder>>> Filter(
+        [ProducesResponseType(typeof(List<SaleOrderFilterResponse>), 200)] // Specifies the response type for successful filtering
+        public async Task<ActionResult<List<SaleOrderFilterResponse>>> Filter(
             [FromBody] FilterSaleOrdersCommand command, // Request body parameter
             CancellationToken cancellationToken // Cancellation token for async operation
         )

@@ -17,6 +17,8 @@ public class Employee : BaseLocationEntity
     public decimal? SalaryNet { get; set; }
     public decimal? SalaryBrut { get; set; }
     public decimal? Taxes { get; set; }
+    public long? EmployeeTypeId { get; set; }
+    public long? UserId { get; set; }
     public virtual List<EmployeePayment> EmployeePayments { get; set; }
 
 }
@@ -30,6 +32,8 @@ public class EmployeeDto : IMapFrom<Employee>
     public decimal? SalaryNet { get; set; }
     public decimal? SalaryBrut { get; set; }
     public decimal? Taxes { get; set; }
+    public long? EmployeeTypeId { get; set; }
+    public long? UserId { get; set; }
     public long? LocationId { get; set; }
     public string? LocationName { get; set; }
 }
@@ -44,6 +48,8 @@ public class EmployeeWithPhoto
     public decimal? SalaryNet { get; set; }
     public decimal? SalaryBrut { get; set; }
     public decimal? Taxes { get; set; }
+    public long? EmployeeTypeId { get; set; }
+    public long? UserId { get; set; }
     public long? LocationId { get; set; }
     public string? LocationName { get; set; }
     public byte[] ProfilePhoto { get; set; }  // Updated to store file content

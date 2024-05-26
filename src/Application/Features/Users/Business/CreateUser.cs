@@ -2,7 +2,6 @@
 using MediatR;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using AutoMapper;
-using MyCoffeeShop.Application.Common.Abstracts;
 using MyCoffeeShop.Application.Common.Constants;
 namespace MyCoffeeShop.Application.Users;
 
@@ -24,12 +23,10 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
         _applicationDbContext = applicationDbContext;
 
         RuleFor(v => v.FirstName)
-                   .MaximumLength(ConfigurationConstants.nameStringLength)
-                   .NotEmpty();
+                   .MaximumLength(ConfigurationConstants.nameStringLength);
 
         RuleFor(v => v.LastName)
-            .MaximumLength(ConfigurationConstants.nameStringLength)
-            .NotEmpty();
+            .MaximumLength(ConfigurationConstants.nameStringLength);
 
         RuleFor(v => v.Email)
             .MaximumLength(ConfigurationConstants.nameStringLength)

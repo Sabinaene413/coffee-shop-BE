@@ -12,7 +12,9 @@ public record CreateEmployeeCommand(
     IFormFile? File,
     decimal? Taxes,
     decimal? SalaryBrut,
-    decimal? SalaryNet
+    decimal? SalaryNet,
+    long? EmployeeTypeId,
+    long? UserId
 ) : IRequest<EmployeeDto>;
 
 public class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
@@ -65,6 +67,8 @@ internal sealed class CreateEmployeeCommandHandler
             SalaryNet = request.SalaryNet,
             Taxes = request.Taxes,
             FilePath = uploadfilepath,
+            EmployeeTypeId = request.EmployeeTypeId,
+            UserId = request.UserId,
         };
 
         await _applicationDbContext.Employees.AddAsync(entity, cancellationToken);

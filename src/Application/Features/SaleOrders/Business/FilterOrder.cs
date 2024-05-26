@@ -9,10 +9,10 @@ namespace MyCoffeeShop.Application.SaleOrders;
 public record FilterSaleOrdersCommand(
     long? Id,
     decimal? Cost,
-    DateTime? OrderDate) : IRequest<List<SaleOrderDto>>;
+    DateTime? OrderDate) : IRequest<List<SaleOrderFilterResponse>>;
 
 internal sealed class FilterSaleOrdersHandler
-    : IRequestHandler<FilterSaleOrdersCommand, List<SaleOrderDto>>
+    : IRequestHandler<FilterSaleOrdersCommand, List<SaleOrderFilterResponse>>
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
@@ -23,13 +23,14 @@ internal sealed class FilterSaleOrdersHandler
         _mapper = mapper;
     }
 
-    public async Task<List<SaleOrderDto>> Handle(
+    public async Task<List<SaleOrderFilterResponse>> Handle(
         FilterSaleOrdersCommand request,
         CancellationToken cancellationToken
     )
     {
-        var query = _applicationDbContext.SaleOrders.AsQueryable();
-
+        var query = _applicationDbContext.SaleOrders
+                                    .Include(x => x.SaleOrderProducts)
+                                    .ThenInclude(x => x.SaleProduct).AsQueryable();
         // Apply filters
         if (request.Id.HasValue)
             query = query.Where(u => u.Id == request.Id.Value);
@@ -44,13 +45,14 @@ internal sealed class FilterSaleOrdersHandler
 
 
         var entities = await query.ToListAsync(cancellationToken);
-        return entities.Select(x => new SaleOrderDto()
+        return entities.Select(x => new SaleOrderFilterResponse()
         {
             Id = x.Id,
             Cost = x.Cost,
             OrderDate = x.OrderDate,
             LocationId = x.LocationId,
             LocationName = x.LocationName,
+            Products = $"Produse: " + string.Join(", ", x.SaleOrderProducts.Select(x => x.Quantity + "X " + x.SaleProduct.Name)),
         }).ToList();
     }
 }

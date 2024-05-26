@@ -26,7 +26,6 @@ public class ShopOrderDto : IMapFrom<ShopOrder>
     public DateTime? OrderDate { get; set; }
     public DateTime? ArrivalDate { get; set; }
     public bool Received { get; set; }
-
     public List<ShopProductOrderDto> ShopOrderProducts { get; set; }
 
 }

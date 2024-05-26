@@ -27,7 +27,7 @@ public class TransactionTypeDto : IMapFrom<TransactionType>
 
 public enum TransactionTypeEnum
 {
-    IN = 1,
-    OUT = 2,
+    CUMPARARE = 1,
+    VANZARE = 2,
     
 }

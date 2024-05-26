@@ -7,7 +7,7 @@ public class TransactionTypeConfiguration : IEntityTypeConfiguration<Transaction
 {
     public void Configure(EntityTypeBuilder<TransactionType> builder)
     {
-        builder.HasData(new List<TransactionType>() { new TransactionType() { Id = (long)TransactionTypeEnum.IN, Name = TransactionTypeEnum.IN.ToString() }
-            , new TransactionType() { Id = (long)TransactionTypeEnum.OUT, Name = TransactionTypeEnum.OUT.ToString() } });
+        builder.HasData(new List<TransactionType>() { new TransactionType() { Id = (long)TransactionTypeEnum.CUMPARARE, Name = TransactionTypeEnum.CUMPARARE.ToString() }
+            , new TransactionType() { Id = (long)TransactionTypeEnum.VANZARE, Name = TransactionTypeEnum.VANZARE.ToString() } });
     }
 }

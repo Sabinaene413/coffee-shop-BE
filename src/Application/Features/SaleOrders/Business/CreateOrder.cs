@@ -65,7 +65,7 @@ internal sealed class CreateOrderCommandHandler
             SaleOrderId = entity.Id,
             TotalAmount = entity.Cost,
             TransactionDate = entity.OrderDate,
-            TransactionTypeId = (long)TransactionTypeEnum.IN,
+            TransactionTypeId = (long)TransactionTypeEnum.CUMPARARE,
             TransactionDetails = entity.SaleOrderProducts.Select(x => new TransactionDetail()
             {
                 SaleProductId = x.SaleProductId,

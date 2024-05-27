@@ -59,7 +59,7 @@ internal sealed class CreateEmployeePaymentCommandHandler
             EmployeePaymentId = entity.Id,
             TotalAmount = request.Amount,
             TransactionDate = request.EmployeePaymentDate,
-            TransactionTypeId = (long)TransactionTypeEnum.VANZARE
+            TransactionTypeId = (long)TransactionTypeEnum.PLATA
         };
         await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

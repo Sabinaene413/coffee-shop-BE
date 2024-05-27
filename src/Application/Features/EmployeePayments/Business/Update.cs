@@ -52,6 +52,15 @@ internal sealed class UpdateEmployeePaymentCommandHandler
         entity.EmployeeId = request.EmployeeId;
         entity.EmployeePaymentDate = request.EmployeePaymentDate;
 
+
+        var oldTransaction = await _applicationDbContext.Transactions.FirstOrDefaultAsync(x => x.EmployeePaymentId == entity.Id, cancellationToken);
+        if (oldTransaction != null)
+        {
+            oldTransaction.TotalAmount = entity.Amount;
+            oldTransaction.TransactionDate = entity.EmployeePaymentDate;
+            _applicationDbContext.Transactions.Update(oldTransaction);
+        }
+
         _applicationDbContext.EmployeePayments.Update(entity);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 

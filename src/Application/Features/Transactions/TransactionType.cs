@@ -29,5 +29,6 @@ public enum TransactionTypeEnum
 {
     CUMPARARE = 1,
     VANZARE = 2,
+    PLATA = 3
     
 }

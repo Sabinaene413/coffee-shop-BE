@@ -4,6 +4,7 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.TransactionTypes;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyCoffeeShop.Application.EmployeePayments;
 
@@ -54,12 +55,15 @@ internal sealed class CreateEmployeePaymentCommandHandler
         await _applicationDbContext.EmployeePayments.AddAsync(entity, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
+        var employee = await _applicationDbContext.Employees.FirstOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken);
+
         var newTransaction = new Transaction
         {
             EmployeePaymentId = entity.Id,
             TotalAmount = request.Amount,
             TransactionDate = request.EmployeePaymentDate,
-            TransactionTypeId = (long)TransactionTypeEnum.PLATA
+            TransactionTypeId = (long)TransactionTypeEnum.PLATA,
+            Description = $"Plata angajat numarul {entity.Id} pentru angajatul: {employee.FirstName} {employee.LastName}",
         };
         await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

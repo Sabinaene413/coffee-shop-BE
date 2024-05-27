@@ -4,6 +4,7 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
+using MyCoffeeShop.Application.Employees;
 
 namespace MyCoffeeShop.Application.EmployeePayments;
 
@@ -52,12 +53,14 @@ internal sealed class UpdateEmployeePaymentCommandHandler
         entity.EmployeeId = request.EmployeeId;
         entity.EmployeePaymentDate = request.EmployeePaymentDate;
 
+        var employee = await _applicationDbContext.Employees.FirstOrDefaultAsync(x => x.Id == request.EmployeeId, cancellationToken);
 
         var oldTransaction = await _applicationDbContext.Transactions.FirstOrDefaultAsync(x => x.EmployeePaymentId == entity.Id, cancellationToken);
         if (oldTransaction != null)
         {
             oldTransaction.TotalAmount = entity.Amount;
             oldTransaction.TransactionDate = entity.EmployeePaymentDate;
+            oldTransaction.Description = $"Plata angajat numarul {entity.Id} pentru angajatul: {employee.FirstName} {employee.LastName}";
             _applicationDbContext.Transactions.Update(oldTransaction);
         }
 

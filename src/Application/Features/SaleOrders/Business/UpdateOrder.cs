@@ -60,6 +60,15 @@ internal sealed class UpdateOrderCommandHandler
         }).ToList();
         await _applicationDbContext.SaleProductOrders.AddRangeAsync(newProducts, cancellationToken);
 
+
+        request.SaleOrderProducts.Where(x => x.Id.HasValue)?.ToList().ForEach(product =>
+        {
+            var modifiedProduct = entity.SaleOrderProducts.Where(x => x.Id == product.Id).FirstOrDefault();
+            modifiedProduct.Price = product.Price;
+            modifiedProduct.Cost = product.Cost;
+            modifiedProduct.Quantity = product.Quantity;
+        });
+
         entity.Cost = request.Cost;
         entity.OrderDate = request.OrderDate;
 

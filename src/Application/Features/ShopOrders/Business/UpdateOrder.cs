@@ -67,6 +67,14 @@ internal sealed class UpdateOrderCommandHandler
         }).ToList();
         await _applicationDbContext.ShopProductOrders.AddRangeAsync(newProducts, cancellationToken);
 
+        request.ShopOrderProducts.Where(x => x.Id.HasValue)?.ToList().ForEach(product =>
+        {
+            var modifiedProduct = entity.ShopOrderProducts.Where(x => x.Id == product.Id).FirstOrDefault();
+            modifiedProduct.Price = product.Price;
+            modifiedProduct.Cost = product.Cost;
+            modifiedProduct.Quantity = product.Quantity;
+        });
+
         entity.Supplier = request.Supplier;
         entity.Cost = request.Cost;
         entity.OrderDate = request.OrderDate;
@@ -90,7 +98,7 @@ internal sealed class UpdateOrderCommandHandler
         }
 
         var oldTransaction = await _applicationDbContext.Transactions.Include(x => x.TransactionDetails).FirstOrDefaultAsync(x => x.ShopOrderId == entity.Id, cancellationToken);
-        entity = await _applicationDbContext.ShopOrders.Include(x => x.ShopOrderProducts).ThenInclude(x=> x.ShopProduct).FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
+        entity = await _applicationDbContext.ShopOrders.Include(x => x.ShopOrderProducts).ThenInclude(x => x.ShopProduct).FirstOrDefaultAsync(x => x.Id == entity.Id, cancellationToken);
 
         var newTransaction = new Transaction()
         {

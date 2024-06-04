@@ -82,7 +82,7 @@ internal sealed class CreateOrderCommandHandler
         var coffeeShopBudget = await _applicationDbContext.CoffeeShops.FirstOrDefaultAsync(x => x.Id == _httpContextAccesorService.LocationId, cancellationToken);
         if (coffeeShopBudget != null)
         {
-            coffeeShopBudget.Budget -= entity.Cost;
+            coffeeShopBudget.Budget += entity.Cost;
             _applicationDbContext.CoffeeShops.Update(coffeeShopBudget);
         }
         await _applicationDbContext.SaveChangesAsync(cancellationToken);

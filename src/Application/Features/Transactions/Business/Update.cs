@@ -4,6 +4,8 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
+using MyCoffeeShop.Application.TransactionTypes;
+using MyCoffeeShop.Application.Common.Interfaces;
 
 namespace MyCoffeeShop.Application.Transactions;
 
@@ -30,14 +32,18 @@ internal sealed class UpdateTransactionCommandHandler
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccesorService _httpContextAccesorService;
 
     public UpdateTransactionCommandHandler(
         ApplicationDbContext applicationDbContext,
-        IMapper mapper
+        IMapper mapper,
+        IHttpContextAccesorService httpContextAccesorService
+
     )
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
+        _httpContextAccesorService = httpContextAccesorService;
     }
 
     public async Task<TransactionDto> Handle(
@@ -48,6 +54,16 @@ internal sealed class UpdateTransactionCommandHandler
         var entity = await _applicationDbContext.Transactions
                                       .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
                ?? throw new NotFoundException(nameof(Transaction), request.Id);
+
+
+        var coffeeShopBudget = await _applicationDbContext.CoffeeShops.FirstOrDefaultAsync(x => x.Id == _httpContextAccesorService.LocationId, cancellationToken);
+        if (coffeeShopBudget != null)
+        {
+            coffeeShopBudget.Budget -= entity.TotalAmount * (entity.TransactionTypeId == (long)TransactionTypeEnum.VANZARE ? 1 : -1);
+            coffeeShopBudget.Budget += request.TotalAmount * (request.TransactionTypeId == (long)TransactionTypeEnum.VANZARE ? 1 : -1);
+            _applicationDbContext.CoffeeShops.Update(coffeeShopBudget);
+        }
+
 
         entity.TransactionDate = request.TransactionDate;
         entity.TotalAmount = request.TotalAmount;

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.TransactionTypes;
+using MyCoffeeShop.Application.Common.Interfaces;
 
 namespace MyCoffeeShop.Application.SaleOrders;
 
@@ -29,14 +30,18 @@ internal sealed class UpdateOrderCommandHandler
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccesorService _httpContextAccesorService;
 
     public UpdateOrderCommandHandler(
         ApplicationDbContext applicationDbContext,
-        IMapper mapper
+        IMapper mapper,
+        IHttpContextAccesorService httpContextAccesorService
+
     )
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
+        _httpContextAccesorService = httpContextAccesorService;
     }
 
     public async Task<SaleOrderDto> Handle(
@@ -95,6 +100,14 @@ internal sealed class UpdateOrderCommandHandler
         };
 
          _applicationDbContext.Transactions.Remove(oldTransaction);
+
+        var coffeeShopBudget = await _applicationDbContext.CoffeeShops.FirstOrDefaultAsync(x => x.Id == _httpContextAccesorService.LocationId, cancellationToken);
+        if (coffeeShopBudget != null)
+        {
+            coffeeShopBudget.Budget += oldTransaction.TotalAmount;
+            coffeeShopBudget.Budget -= newTransaction.TotalAmount;
+            _applicationDbContext.CoffeeShops.Update(coffeeShopBudget);
+        }
         await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
 

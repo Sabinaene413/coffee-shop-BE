@@ -41,6 +41,7 @@ internal sealed class CreateCoffeeShopCommandHandler
         var entity = new CoffeeShop
         {
             Name = request.Name,
+            Budget = 0
         };
 
         await _applicationDbContext.CoffeeShops.AddAsync(entity, cancellationToken);

@@ -5,6 +5,7 @@ using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Exceptions;
 using MyCoffeeShop.Application.Employees;
+using MyCoffeeShop.Application.Common.Interfaces;
 
 namespace MyCoffeeShop.Application.EmployeePayments;
 
@@ -30,14 +31,17 @@ internal sealed class UpdateEmployeePaymentCommandHandler
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccesorService _httpContextAccesorService;
 
     public UpdateEmployeePaymentCommandHandler(
         ApplicationDbContext applicationDbContext,
-        IMapper mapper
+        IMapper mapper,
+        IHttpContextAccesorService httpContextAccesorService
     )
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
+        _httpContextAccesorService = httpContextAccesorService;
     }
 
     public async Task<EmployeePaymentDto> Handle(
@@ -58,6 +62,15 @@ internal sealed class UpdateEmployeePaymentCommandHandler
         var oldTransaction = await _applicationDbContext.Transactions.FirstOrDefaultAsync(x => x.EmployeePaymentId == entity.Id, cancellationToken);
         if (oldTransaction != null)
         {
+
+            var coffeeShopBudget = await _applicationDbContext.CoffeeShops.FirstOrDefaultAsync(x => x.Id == _httpContextAccesorService.LocationId, cancellationToken);
+            if (coffeeShopBudget != null)
+            {
+                coffeeShopBudget.Budget += oldTransaction.TotalAmount;
+                coffeeShopBudget.Budget -= entity.Amount;
+                _applicationDbContext.CoffeeShops.Update(coffeeShopBudget);
+            }
+
             oldTransaction.TotalAmount = entity.Amount;
             oldTransaction.TransactionDate = entity.EmployeePaymentDate;
             oldTransaction.Description = $"Plata angajat numarul {entity.Id} pentru angajatul: {employee.FirstName} {employee.LastName}";

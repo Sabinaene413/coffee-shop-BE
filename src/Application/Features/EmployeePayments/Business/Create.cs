@@ -5,6 +5,7 @@ using MyCoffeeShop.Application.Infrastructure.Persistence;
 using MyCoffeeShop.Application.Transactions;
 using MyCoffeeShop.Application.TransactionTypes;
 using Microsoft.EntityFrameworkCore;
+using MyCoffeeShop.Application.Common.Interfaces;
 
 namespace MyCoffeeShop.Application.EmployeePayments;
 
@@ -29,14 +30,17 @@ internal sealed class CreateEmployeePaymentCommandHandler
 {
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccesorService _httpContextAccesorService;
 
     public CreateEmployeePaymentCommandHandler(
         ApplicationDbContext applicationDbContext,
-        IMapper mapper
+        IMapper mapper,
+        IHttpContextAccesorService httpContextAccesorService
     )
     {
         _applicationDbContext = applicationDbContext;
         _mapper = mapper;
+        _httpContextAccesorService = httpContextAccesorService;
     }
 
     public async Task<EmployeePaymentDto> Handle(
@@ -65,6 +69,13 @@ internal sealed class CreateEmployeePaymentCommandHandler
             TransactionTypeId = (long)TransactionTypeEnum.PLATA,
             Description = $"Plata angajat numarul {entity.Id} pentru angajatul: {employee.FirstName} {employee.LastName}",
         };
+
+        var coffeeShopBudget = await _applicationDbContext.CoffeeShops.FirstOrDefaultAsync(x => x.Id == _httpContextAccesorService.LocationId, cancellationToken);
+        if (coffeeShopBudget != null)
+        {
+            coffeeShopBudget.Budget -= newTransaction.TotalAmount;
+            _applicationDbContext.CoffeeShops.Update(coffeeShopBudget);
+        }
         await _applicationDbContext.Transactions.AddAsync(newTransaction, cancellationToken);
         await _applicationDbContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<EmployeePaymentDto>(entity);

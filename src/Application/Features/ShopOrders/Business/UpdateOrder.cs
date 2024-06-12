@@ -111,7 +111,7 @@ internal sealed class UpdateOrderCommandHandler
             ShopOrderId = entity.Id,
             TotalAmount = entity.Cost,
             TransactionDate = entity.OrderDate,
-            TransactionTypeId = (long)TransactionTypeEnum.VANZARE,
+            TransactionTypeId = (long)TransactionTypeEnum.CUMPARARE,
             TransactionDetails = entity.ShopOrderProducts.Select(x => new TransactionDetail()
             {
                 ShopProductId = x.ShopProductId,

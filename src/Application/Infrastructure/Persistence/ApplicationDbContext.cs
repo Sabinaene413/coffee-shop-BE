@@ -103,7 +103,10 @@ public class ApplicationDbContext : DbContext
     {
         if(_contextAccesorService.LocationId != null)
         {
+            builder.Entity<Transaction>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<TransactionDetail>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<Employee>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
+            builder.Entity<EmployeePayment>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<Inventory>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<SaleOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);
             builder.Entity<ShopOrder>().HasQueryFilter(entity => entity.LocationId == _contextAccesorService.LocationId);

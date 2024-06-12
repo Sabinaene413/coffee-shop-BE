@@ -20,7 +20,6 @@ public class UpdateInventoryCommandValidator : AbstractValidator<UpdateInventory
     public UpdateInventoryCommandValidator()
     {
         RuleFor(v => v.ShopProductId).NotEmpty();
-        RuleFor(v => v.Quantity).NotEmpty();
     }
 }
 

@@ -146,7 +146,7 @@ internal sealed class ShopSalesCommandHandler
                     if (countMonth == 1)
                         monthSaleDto = new ShopSalesDto()
                         {
-                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(28 - countDayIn))
+                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(360 - countDayIn))
                         };
 
                     var first = saleDay.FirstOrDefault();
@@ -157,7 +157,7 @@ internal sealed class ShopSalesCommandHandler
                     monthSaleDto.NoOfSales += saleDay.Count();
                     monthSaleDto.NoOfItemsSold += saleDay.SelectMany(x => x.SaleOrderProducts).Select(x => x.Quantity).Count();
 
-                    if (countMonth == 7)
+                    if (countMonth == 28)
                     {
                         salesDto.Add(monthSaleDto);
                         countMonth = 0;

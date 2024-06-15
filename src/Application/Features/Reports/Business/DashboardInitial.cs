@@ -50,6 +50,7 @@ internal sealed class DashboardInitialCommandHandler
         DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
 
         var currentMonthSales = await _applicationDbContext.SaleOrders.Where(x => x.OrderDate.Value.Date >= firstDayOfMonth && x.OrderDate.Value.Date <= lastDayOfMonth).CountAsync(cancellationToken);
+        var lastMonthSales = await _applicationDbContext.SaleOrders.Where(x => x.OrderDate.Value.Date >= DateTime.Now.Date.AddDays(-28)).CountAsync(cancellationToken);
 
 
         return new DashboardDto()
@@ -57,6 +58,7 @@ internal sealed class DashboardInitialCommandHandler
             Budget = currentBudget,
             NoOfSales = totalSales,
             NoOfSalesCurrentMonth = currentMonthSales,
+            NoOfSalesLastMonth = lastMonthSales
         };
     }
 

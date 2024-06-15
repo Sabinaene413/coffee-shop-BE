@@ -23,6 +23,7 @@
     {
         public decimal Budget { get; set; }
         public int NoOfSales { get; set; }
+        public int NoOfSalesLastMonth { get; set; }
         public int NoOfSalesCurrentMonth { get; set; }
         public int NoOfSelledItems { get; set; }
         public int NoOfSelledItemsCurrentMonth { get; set; }

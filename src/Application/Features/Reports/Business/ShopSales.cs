@@ -108,60 +108,55 @@ internal sealed class ShopSalesCommandHandler
             case (long)ReportTypeEnum.LUNAR:
 
                 ShopSalesDto weekSaleDto = null;
-                int countDay = 0;
-                int countWeek = 0;
-                foreach (var saleDay in shopSales.GroupBy(x => x.OrderDate.Value.Date))
+                for (int i = 1; i <= 28; i++)
                 {
-                    countDay++;
-                    countWeek++;
-                    if (countWeek == 1)
+
+                    if (i % 7 == 1)
                         weekSaleDto = new ShopSalesDto()
                         {
-                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(28 - countDay))
+                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(28 - i + 1))
                         };
 
-                    var first = saleDay.FirstOrDefault();
-                    if (first is null)
-                        continue;
-
-                    weekSaleDto.Cost += saleDay.Sum(x => x.Cost);
-                    weekSaleDto.NoOfSales += saleDay.Count();
-                    weekSaleDto.NoOfItemsSold += saleDay.SelectMany(x => x.SaleOrderProducts).Select(x => x.Quantity).Count();
-
-                    if (countWeek == 7)
+                    var sales = shopSales.Where(x => x.OrderDate.Value.Date == (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(28 - i + 1))).ToList();
+                    if (sales is null || !sales.Any())
                     {
-                        salesDto.Add(weekSaleDto);
-                        countWeek = 0;
+                        if (i % 7 == 0)
+                            salesDto.Add(weekSaleDto);
+                        continue;
                     }
+
+                    weekSaleDto.Cost += sales.Sum(x => x.Cost);
+                    weekSaleDto.NoOfSales += sales.Count();
+                    weekSaleDto.NoOfItemsSold += sales.SelectMany(x => x.SaleOrderProducts).Select(x => x.Quantity).Count();
+
+                    if (i % 7 == 0)
+                        salesDto.Add(weekSaleDto);
                 }
                 break;
             case (long)ReportTypeEnum.ANUAL:
                 ShopSalesDto monthSaleDto = null;
-                int countDayIn = 0;
-                int countMonth = 0;
-                foreach (var saleDay in shopSales.GroupBy(x => x.OrderDate.Value.Date))
+                for (int i = 1; i <= 360; i++)
                 {
-                    countDayIn++;
-                    countMonth++;
-                    if (countMonth == 1)
+                    if (i % 28 == 1)
                         monthSaleDto = new ShopSalesDto()
                         {
-                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(360 - countDayIn))
+                            SaleDate = (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(360 - i + 1))
                         };
 
-                    var first = saleDay.FirstOrDefault();
-                    if (first is null)
-                        continue;
-
-                    monthSaleDto.Cost += saleDay.Sum(x => x.Cost);
-                    monthSaleDto.NoOfSales += saleDay.Count();
-                    monthSaleDto.NoOfItemsSold += saleDay.SelectMany(x => x.SaleOrderProducts).Select(x => x.Quantity).Count();
-
-                    if (countMonth == 28)
+                    var sales = shopSales.Where(x => x.OrderDate.Value.Date == (request.RefferenceDate ?? DateTime.Now).Date.AddDays(-(360 - i + 1))).ToList();
+                    if (sales is null || !sales.Any())
                     {
-                        salesDto.Add(monthSaleDto);
-                        countMonth = 0;
+                        if (i % 28 == 0)
+                            salesDto.Add(monthSaleDto);
+                        continue;
                     }
+
+                    monthSaleDto.Cost += sales.Sum(x => x.Cost);
+                    monthSaleDto.NoOfSales += sales.Count();
+                    monthSaleDto.NoOfItemsSold += sales.SelectMany(x => x.SaleOrderProducts).Select(x => x.Quantity).Count();
+
+                    if (i % 28 == 0)
+                        salesDto.Add(monthSaleDto);
                 }
                 break;
             default:

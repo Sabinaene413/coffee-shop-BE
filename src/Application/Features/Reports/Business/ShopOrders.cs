@@ -4,9 +4,8 @@ using FluentValidation;
 using MyCoffeeShop.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using MyCoffeeShop.Application.Common.Interfaces;
-using MyCoffeeShop.Application.Features.Reports;
 
-namespace MyCoffeeShop.Application.Transactions;
+namespace MyCoffeeShop.Application.Reports;
 
 public record ShopOrdersCommand(
     DateTime? RefferenceDate,

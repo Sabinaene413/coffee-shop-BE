@@ -1,4 +1,4 @@
-﻿namespace MyCoffeeShop.Application.Features.Reports
+﻿namespace MyCoffeeShop.Application.Reports
 {
 
     public enum ReportTypeEnum

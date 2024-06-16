@@ -54,6 +54,9 @@ internal sealed class ProfitSixMonthsCommandHandler
         {
 
             DateTime firstDayOfLastMonth = new DateTime(refDate.Year, refDate.AddMonths(-i).Month, 1);
+            if (refDate.Month < firstDayOfLastMonth.Month)
+                firstDayOfLastMonth = firstDayOfLastMonth.AddYears(-1);
+
             DateTime lastDayOfLastMonth = firstDayOfLastMonth.AddMonths(1).AddDays(-1);
 
             var monthTransactions = await _applicationDbContext.Transactions.Where(x => x.TransactionDate.Value.Date >= firstDayOfLastMonth && x.TransactionDate.Value.Date <= lastDayOfLastMonth).ToListAsync(cancellationToken);
